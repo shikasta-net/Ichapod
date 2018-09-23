@@ -5,42 +5,8 @@
 ##############
 ## SETTINGS ##
 ##############
-# In the default setup, Ichapod is installed to /usr/share/ichapod
-# It should be possible to put any of the files associated with it pretty much anywhere.
-# This is where you want to finished podcast files to go
-destinationfolder="/usr/share/ichapod/downloads"
-
-# This is the file containing your podcasts to be downloaded
-podcastlist="/usr/share/ichapod/podcasts.txt"
-
-# This is the number of days old an item can be and still be downloaded.
-# If you set the agelimit to 12 and Ichapod gets a story that's 2 weeks old, it will skip it.
-agelimit="3";
-
-# Download Log
-# This file is maintained & used by Ichapod and isn't intended to be human readable.
-# It prevents Ichapod from trying to download a file it has already downloaded.
-downloadlog="/usr/share/ichapod/downloadedpodcasts.log"
-
-# Daily Log File
-# If you are running Ichapod via cron and logging the output to a file, you can tell Ichapod where the file is
-# to allow it to insert a custom log header into it.
-dailylog="/usr/share/ichapod/ichapod-`date +\%Y-\%m-\%d`.log";
-
-# Daily Log Header
-# this is the text you want inserted at the top of your daily log file.
-dailylogheader=$( echo -e "#################################################\n############# ICHAPOD ## `date +\%m-\%d-\%Y` #############\n#################################################\n \n" );
-
-# This should be pointed at the xsl file in your Ichapod location.
-# You usually do not need to mess with this, just give the location of the included file
-processorfile="/usr/share/ichapod/readpodcast.xsl"
-
-# This is a temporary log, used to collect output for debugging purposes.
-# Its rebuilt every time Ichapod is run, useful if you're trying to see what happened during the last run.
-# You can usually just leave the default.
-debuglog="/usr/share/ichapod/ichapod-lastrun.log";
-
-# END SETTINGS ###################################
+# Move the settings to a global locaiton
+. /etc/default/ichapod
 
 # Begin actual script #############################
 # First we check that the daily log variables havbe been set, but the current log file is empty.
