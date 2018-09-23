@@ -143,13 +143,13 @@ set -e
 					then
 						echo "$downloadurl" >> "$downloadlog"; # Log it, and tag it.
 						echo "$(date +\%m-\%d-\%I:\%M\%p): Now running eyeD3.">>"$debuglog";
-						eyeD3 --to-v2.3 --set-text-frame=TPE2:"$label" --genre=Podcast --year=$year --title="$episodetitle" --album="$album" --artist="$label" "$finishedfilename">>"$debuglog" 2>&1;
+						eyeD3 --no-color --to-v2.3 --set-text-frame=TPE2:"$label" --genre=Podcast --year=$year --title="$episodetitle" --album="$album" --artist="$label" "$finishedfilename">>"$debuglog" 2>&1;
 						echo " ">>"$debuglog"; # For readability
 						if [ -e "$coverartlocation" ] # Check for cover art file, and if it exists, tag it into the file.
 						then
 							echo "$(date +\%m-\%d-\%I:\%M\%p): Now tagging the artwork in.">>"$debuglog";
-							eyeD3 --remove-images "$finishedfilename">>"$debuglog";
-							eyeD3 --to-v2.3 --add-image="$coverartlocation":FRONT_COVER "$finishedfilename">>"$debuglog";
+							eyeD3 --no-color --remove-images "$finishedfilename">>"$debuglog";
+							eyeD3 --no-color --to-v2.3 --add-image="$coverartlocation":FRONT_COVER "$finishedfilename">>"$debuglog";
 							echo " ">>"$debuglog";
 						fi
 						# Check the mp3 to see if it has already been run through MP3gain and skip it if it has.
