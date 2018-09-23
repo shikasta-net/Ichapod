@@ -118,16 +118,15 @@ set -e
 					then  # There are some variables that are different if you have only one "label" to work with.
 						mkdir -p "$destinationfolder/$label"; # Need to make sure the destination folder is there or wget won't work
 						album="$label";
-						finishedfilename=$(echo "$destinationfolder"/"$label"/"$label"-"$date"-"$episodetitle".mp3);
-						coverartlocation=$destinationfolder/$label/Folder.jpg;
+						finishedfilename="$destinationfolder/$label/$date - $episodetitle - $label.mp3";
+						coverartlocation="$destinationfolder/$label/Folder.jpg";
 					fi
 					if [ "$label2" != "" ]; # Here's the other version, for if you have 2 labels.
-					then  
-						mkdir -p "$destinationfolder/$label"; # Need to make sure the destination folder is there or wget won't work
-						mkdir -p "$destinationfolder/$label/$label-$label2";
+					then
+						mkdir -p "$destinationfolder/$label/$label2";
 						album="$label2";
-						finishedfilename=$destinationfolder/$label/$label-$label2/$label-$label2-$date-$episodetitle.mp3;
-						coverartlocation=$destinationfolder/$label/$label-$label2/Folder.jpg;
+						finishedfilename="$destinationfolder/$label/$label2/$date - $episodetitle - $label - $label2.mp3";
+						coverartlocation="$destinationfolder/$label/$label2/Folder.jpg";
 					fi
 					# If file DOES exist already, that seems weird.
 					if [ -e "$finishedfilename" ]
@@ -137,7 +136,7 @@ set -e
 					# only download if file doesn't already exist
 					if [ ! -e "$finishedfilename" ]
 					then
-						echo "$(date +\%m-\%d-\%I:\%M\%p): Downloading $label-$date-$episodetitle.mp3.">>"$dailylog";
+						echo "$(date +\%m-\%d-\%I:\%M\%p): Downloading $finishedfilename.mp3.">>"$dailylog";
 						wget -q -x -t 10 -O "$finishedfilename" "$downloadurl"; # Download the file.
 					fi
 					if [ -e "$finishedfilename" ] # If the downloaded file exists, then we can proceed to deal with it.
