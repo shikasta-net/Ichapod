@@ -9,7 +9,7 @@ destinationfolder="/usr/share/ichapod/downloads"
 # This is the file containing your podcasts to be downloaded
 podcastlist="/usr/share/ichapod/podcasts.txt"
 
-# This is the number of days old an item can be and still be downloaded.
+# This is the number of days old an item can be and still be downloaded. To disable set to 0.
 # If you set the agelimit to 12 and Ichapod gets a story that's 2 weeks old, it will skip it.
 agelimit="3";
 

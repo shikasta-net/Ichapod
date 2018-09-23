@@ -104,7 +104,7 @@ set -e
 				# On the left side of "greater than" we have the current date in GNU seconds format, minus the episode date in the same format.
 				# AKA "how old it is"
 				# on the right we simply multiply the age limit by 86,400 (the number of seconds in a day) so that its the same format.
-				if [ $(($( date +%s)-$ageseconds)) -gt $(($agelimit*86400)) ]
+				if [ $agelimit -gt 0 ] && [ $(($( date +%s)-$ageseconds)) -gt $(($agelimit*86400)) ]
 				then
 					ageskip=true;
 					echo "$(date +\%m-\%d-\%I:\%M\%p): Skipping $label-$date-$episodetitle.mp3, too old.">>"$debuglog";
