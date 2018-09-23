@@ -38,6 +38,8 @@ set -e
 	# Now we read through the podcast list and handle each one
 	while read podcast
 	do
+		if [[ ${podcast:0:1} != "#" ]];
+		then
 			# Avoiding some logic issues by freshly instantiated variables at the start of each podcast
 			label="";
 			label2="";
@@ -164,6 +166,7 @@ set -e
 			done < "/tmp/ichapodtmp.log"
 			echo "$(date +\%m-\%d-\%I:\%M\%p): Finished with this feed.">>"$debuglog";
 			echo " ">>"$debuglog";
+		fi
 	done < "$podcastlist"
 	echo "$(date +\%m-\%d-\%I:\%M\%p): Removing temporary log, processing complete.">>"$debuglog";
 	rm -f /tmp/ichapodtmp.log;
