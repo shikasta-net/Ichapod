@@ -74,6 +74,8 @@ set -e
 			fi #now we pull & process the feed items from the current podcast feed we are processing.
 			log_info "Now working on $label-$label2-$feedurl.";
 			xsltproc $processorfile $feedurl>/tmp/ichapodtmp.log;
+			# Episodes are downloaded in reverse order so number in reverse from the most recent
+			episodenumber="$(wc -l < /tmp/ichapodtmp.log)";
 			while read episode
 			do
 				# This is the loop that processes each episode within a podcast.
@@ -150,7 +152,7 @@ set -e
 					then
 						echo "$downloadurl" >> "$downloadlog"; # Log it, and tag it.
 						log_info "Now running eyeD3.";
-						eyeD3 --no-color --to-v2.3 --set-text-frame=TPE2:"$label" --genre=Podcast --year=$year --title="$episodetitle" --album="$album" --artist="$label" "$finishedfilename">>"$debuglog" 2>&1;
+						eyeD3 --no-color --to-v2.3 --set-text-frame=TPE2:"$label" --genre=Podcast --year=$year --title="$episodetitle" --album="$album" --artist="$label" --track="$episodenumber" "$finishedfilename">>"$debuglog" 2>&1;
 						log_info "eyeD3 done."
 						if [ -e "$coverartlocation" ] # Check for cover art file, and if it exists, tag it into the file.
 						then
@@ -169,6 +171,7 @@ set -e
 						log_info "End post-processing.";
 					fi # END Post-Processing Branch.
 				fi # END Downloader Branch.
+				episodenumber=$((episodenumber - 1)); # Decrement the episode counter
 			done < "/tmp/ichapodtmp.log"
 			log_info "Finished with this feed.";
 		fi
