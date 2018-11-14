@@ -161,12 +161,12 @@ set -e
 							eyeD3 --no-color --to-v2.3 --add-image="$coverartlocation":FRONT_COVER "$finishedfilename">>"$debuglog";
 							log_info "eyeD3 done."
 						fi
-						# Check the mp3 to see if it has already been run through MP3gain and skip it if it has.
+						# Check the mp3 to see if it has already been run through ReplayGain and skip it if it has.
 						if ! eyeD3 "$finishedfilename" | grep replaygain_reference_loudness>/dev/null;
 						then
-							log_info "Applying MP3gain to file.";
-							mp3gain -T -e -r -s i -c -q "$finishedfilename">>"$debuglog" 2>&1; # Normalize the file
-							log_info "MP3gain done."
+							log_info "Applying ReplayGain to file.";
+							replaygain -f --no-album "$finishedfilename">>"$debuglog" 2>&1; # Normalize the file
+							log_info "ReplayGain done."
 						fi
 						log_info "End post-processing.";
 					fi # END Post-Processing Branch.
