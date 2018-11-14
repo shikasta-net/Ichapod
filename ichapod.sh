@@ -147,29 +147,29 @@ set -e
 					then
 						log_info "Downloading $finishedfilename.mp3.";
 						wget -q -x -t 10 -O "$finishedfilename" "$downloadurl"; # Download the file.
-					fi
-					if [ -e "$finishedfilename" ] # If the downloaded file exists, then we can proceed to deal with it.
-					then
-						echo "$downloadurl" >> "$downloadlog"; # Log it, and tag it.
-						log_info "Now running eyeD3.";
-						eyeD3 --no-color --to-v2.3 --set-text-frame=TPE2:"$label" --genre=Podcast --year=$year --title="$episodetitle" --album="$album" --artist="$label" --track="$episodenumber" "$finishedfilename">>"$debuglog" 2>&1;
-						log_info "eyeD3 done."
-						if [ -e "$coverartlocation" ] # Check for cover art file, and if it exists, tag it into the file.
+						if [ -e "$finishedfilename" ] # If the downloaded file exists, then we can proceed to deal with it.
 						then
-							log_info "Now tagging the artwork in.";
-							eyeD3 --no-color --remove-images "$finishedfilename">>"$debuglog";
-							eyeD3 --no-color --to-v2.3 --add-image="$coverartlocation":FRONT_COVER "$finishedfilename">>"$debuglog";
+							echo "$downloadurl" >> "$downloadlog"; # Log it, and tag it.
+							log_info "Now running eyeD3.";
+							eyeD3 --no-color --to-v2.3 --set-text-frame=TPE2:"$label" --genre=Podcast --year=$year --title="$episodetitle" --album="$album" --artist="$label" --track="$episodenumber" "$finishedfilename">>"$debuglog" 2>&1;
 							log_info "eyeD3 done."
-						fi
-						# Check the mp3 to see if it has already been run through ReplayGain and skip it if it has.
-						if ! eyeD3 "$finishedfilename" | grep replaygain_reference_loudness>/dev/null;
-						then
-							log_info "Applying ReplayGain to file.";
-							replaygain -f --no-album "$finishedfilename">>"$debuglog" 2>&1; # Normalize the file
-							log_info "ReplayGain done."
-						fi
-						log_info "End post-processing.";
-					fi # END Post-Processing Branch.
+							if [ -e "$coverartlocation" ] # Check for cover art file, and if it exists, tag it into the file.
+							then
+								log_info "Now tagging the artwork in.";
+								eyeD3 --no-color --remove-images "$finishedfilename">>"$debuglog";
+								eyeD3 --no-color --to-v2.3 --add-image="$coverartlocation":FRONT_COVER "$finishedfilename">>"$debuglog";
+								log_info "eyeD3 done."
+							fi
+							# Check the mp3 to see if it has already been run through ReplayGain and skip it if it has.
+							if ! eyeD3 "$finishedfilename" | grep replaygain_reference_loudness>/dev/null;
+							then
+								log_info "Applying ReplayGain to file.";
+								replaygain -f --no-album "$finishedfilename">>"$debuglog" 2>&1; # Normalize the file
+								log_info "ReplayGain done."
+							fi
+							log_info "End post-processing.";
+						fi # END Post-Processing Branch.
+					fi # END Downloader
 				fi # END Downloader Branch.
 				episodenumber=$((episodenumber - 1)); # Decrement the episode counter
 			done < "/tmp/ichapodtmp.log"
