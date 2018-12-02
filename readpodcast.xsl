@@ -4,7 +4,11 @@
 <xsl:variable name="channeltitle"><xsl:value-of select="/rss/channel/title"/></xsl:variable>
 <xsl:template match="/">
 <xsl:for-each select="rss/channel/item">
-<xsl:copy-of select="$channeltitle" />---<xsl:value-of select="pubDate"/>---<xsl:value-of select="title"/>---<xsl:value-of select="enclosure/@url"/><xsl:text>&#xa;</xsl:text>
+  <xsl:choose>
+    <xsl:when test="enclosure/@url != ''">
+      <xsl:copy-of select="$channeltitle" />---<xsl:value-of select="pubDate"/>---<xsl:value-of select="title"/>---<xsl:value-of select="enclosure/@url"/><xsl:text>&#xa;</xsl:text>
+    </xsl:when>
+  </xsl:choose>
 </xsl:for-each>
 </xsl:template>
 </xsl:stylesheet> 
