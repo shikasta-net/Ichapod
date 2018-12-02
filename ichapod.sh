@@ -106,6 +106,20 @@ set -e
 				episodetitle=$(echo ${episodetitle//\//,}); # Replace "/" with ",".
 				episodetitle=$(echo ${episodetitle//\//}); # Remove any remaining "/"s.
 				episode=${episode#*---};
+				# the filetype and extsion
+				filetype=${episode#*---};
+				case "$filetype" in
+						audio/mp4 | audio/x-m4a)
+								fileext=m4a
+								;;
+						audio/mpeg)
+								fileext=mp3
+								;;
+						*)
+								log_info "Unknown filetype $filetype. Fallback to mp3."
+								fileext=mp3
+								;;
+				esac
 				# the actual wget target
 				downloadurl=${episode%---*};
 				# Now that all the episode-specific variables SHOULD be filled, we can read them out to the debug log.
@@ -121,7 +135,7 @@ set -e
 				if [ $agelimit -gt 0 ] && [ $(($( date +%s)-$ageseconds)) -gt $(($agelimit*86400)) ]
 				then
 					ageskip=true;
-					log_info "Skipping $label-$date-$episodetitle.mp3, too old.";
+					log_info "Skipping $label-$date-$episodetitle.$fileext, too old.";
 				fi
 				# If the file isn't already in the log and isn't too old, then lets go!
 				if ! grep "$downloadurl" "$downloadlog">/dev/null && ! $ageskip
@@ -130,14 +144,14 @@ set -e
 					then  # There are some variables that are different if you have only one "label" to work with.
 						mkdir -p "$destinationfolder/$label"; # Need to make sure the destination folder is there or wget won't work
 						album="$label";
-						finishedfilename="$destinationfolder/$label/$date - $episodetitle - $label.mp3";
+						finishedfilename="$destinationfolder/$label/$date - $episodetitle - $label.$fileext";
 						coverartlocation="$destinationfolder/$label/Folder.jpg";
 					fi
 					if [ "$label2" != "" ]; # Here's the other version, for if you have 2 labels.
 					then
 						mkdir -p "$destinationfolder/$label/$label2";
 						album="$label2";
-						finishedfilename="$destinationfolder/$label/$label2/$date - $episodetitle - $label - $label2.mp3";
+						finishedfilename="$destinationfolder/$label/$label2/$date - $episodetitle - $label - $label2.$fileext";
 						coverartlocation="$destinationfolder/$label/$label2/Folder.jpg";
 					fi
 					# If file DOES exist already, that seems weird.
