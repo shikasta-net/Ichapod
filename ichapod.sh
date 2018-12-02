@@ -162,7 +162,7 @@ set -e
 					# only download if file doesn't already exist
 					if [ ! -e "$finishedfilename" ]
 					then
-						log_info "Downloading $finishedfilename.mp3.";
+						log_info "Downloading $finishedfilename.";
 						wget -q -x -t 10 -O "$finishedfilename" "$downloadurl"; # Download the file.
 						if [ -e "$finishedfilename" ] # If the downloaded file exists, then we can proceed to deal with it.
 						then
