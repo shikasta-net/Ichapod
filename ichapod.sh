@@ -164,7 +164,7 @@ set -e
 					then
 						log_info "Downloading $finishedfilename.";
 						wget -q -x -t 10 -O "$finishedfilename" "$downloadurl"; # Download the file.
-						if [ -e "$finishedfilename" ] # If the downloaded file exists, then we can proceed to deal with it.
+						if [ -e "$finishedfilename" ] && [ "$fileext" == "mp3" ] # If the downloaded file exists, then we can proceed to deal with it.
 						then
 							echo "$downloadurl" >> "$downloadlog"; # Log it, and tag it.
 							log_info "Now running eyeD3.";
