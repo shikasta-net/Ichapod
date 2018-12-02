@@ -88,15 +88,18 @@ set -e
 					label=${episode%---*}; # Since we didn't get a label from the podcast list, we just use the one from the feed
 					label=${label%---*};
 					label=${label%---*};
+					label=${label%---*};
 					episode=${episode#*---};
 				fi
 				date=${episode%---*}; # Next pull in the date for the episode
+				date=${date%---*};
 				date=${date%---*};
 				episode=${episode#*---};
 				ageseconds=$(date -d "$date" +%s);
 				year=$(date -d "$date" +%Y);
 				date=$(date -d "$date" +%Y-%m-%d-%H%M); # put the date into the nice 2011-12-03 format
 				episodetitle=${episode%---*}; # Next the title
+				episodetitle=${episodetitle%---*}; # Next the title
 				episodetitle=$(echo ${episodetitle//: /-}); # Replace ": " with "-" in the title.
 				episodetitle=$(echo ${episodetitle//\?/}); # Remove question marks.
 				episodetitle=$(echo ${episodetitle// \/ /, }); # Replace " / " with ", ".

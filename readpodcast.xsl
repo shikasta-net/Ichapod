@@ -6,7 +6,7 @@
 <xsl:for-each select="rss/channel/item">
   <xsl:choose>
     <xsl:when test="enclosure/@url != ''">
-      <xsl:copy-of select="$channeltitle" />---<xsl:value-of select="pubDate"/>---<xsl:value-of select="title"/>---<xsl:value-of select="enclosure/@url"/><xsl:text>&#xa;</xsl:text>
+      <xsl:copy-of select="$channeltitle" />---<xsl:value-of select="pubDate"/>---<xsl:value-of select="title"/>---<xsl:value-of select="enclosure/@url"/>---<xsl:value-of select="enclosure/@type"/><xsl:text>&#xa;</xsl:text>
     </xsl:when>
   </xsl:choose>
 </xsl:for-each>
