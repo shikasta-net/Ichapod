@@ -13,6 +13,10 @@
 ####################################
 function log_info {
 	echo "$(date +\%m-\%d-\%I:\%M\%p): $1">>"$debuglog"
+	if [ -s "$dailylog" ]
+	then
+		echo "$1">>"$dailylog";
+	fi
 }
 
 # Begin actual script #############################
@@ -20,6 +24,7 @@ function log_info {
 # If so, its the first run of the day, and we should output the header.
 if [ ! -s "$dailylog" ] && [ "$dailylogheader" != "" ] && [ "$dailylog" != "" ]
 then
+	mkdir -p "$(dirname $dailylog)"
 	echo "$dailylogheader">>"$dailylog";
 fi
 log_info "Ichapod started.";
