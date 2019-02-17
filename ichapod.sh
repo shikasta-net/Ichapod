@@ -63,13 +63,11 @@ set -e
 				piece1=${podcast%---*}; # Break the podcast text into two chunks to check for labels
 				piece2=${podcast#*---};
 				# Do some tricky string processing to figure out where the download URL is
-				if [[ "${piece2:0:7}" == 'http://' ]];
+				if [[ "${piece2:0:8}" =~ ^https?:// ]];
 				then
 					label="$piece1";
 					feedurl="$piece2";
-				fi
-				if [[ "${piece2:0:7}" != 'http://' ]];
-				then
+				else
 					label=${piece1%---*};
 					feedurl=${piece2#*---};
 					label2=${piece2%---*};
@@ -78,7 +76,7 @@ set -e
 				feedurl=$podcast;
 			fi #now we pull & process the feed items from the current podcast feed we are processing.
 			log_info "Now working on $label-$label2-$feedurl.";
-			xsltproc $processorfile $feedurl>/tmp/ichapodtmp.log;
+			wget -O - -o $debuglog $feedurl | xsltproc $processorfile - > /tmp/ichapodtmp.log;
 			# Episodes are downloaded in reverse order so number in reverse from the most recent
 			episodenumber="$(wc -l < /tmp/ichapodtmp.log)";
 			while read episode
