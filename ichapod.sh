@@ -103,6 +103,8 @@ set -e
 				date=$(date -d "$date" +%Y-%m-%d-%H%M); # put the date into the nice 2011-12-03 format
 				episodetitle=${episode%---*}; # Next the title
 				episodetitle=${episodetitle%---*}; # Next the title
+				episodetitle=$(echo ${episodetitle//—/-}); # Replace unicode emdash with "-" in the title.
+				episodetitle=$(echo ${episodetitle//’/\'}); # Replace unicode tic with "'" in the title.
 				episode=${episode#*---};
 				# the filetype and extsion
 				filetype=${episode#*---};
