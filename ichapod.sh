@@ -103,11 +103,6 @@ set -e
 				date=$(date -d "$date" +%Y-%m-%d-%H%M); # put the date into the nice 2011-12-03 format
 				episodetitle=${episode%---*}; # Next the title
 				episodetitle=${episodetitle%---*}; # Next the title
-				episodetitle=$(echo ${episodetitle//: /-}); # Replace ": " with "-" in the title.
-				episodetitle=$(echo ${episodetitle//\?/}); # Remove question marks.
-				episodetitle=$(echo ${episodetitle// \/ /, }); # Replace " / " with ", ".
-				episodetitle=$(echo ${episodetitle//\//,}); # Replace "/" with ",".
-				episodetitle=$(echo ${episodetitle//\//}); # Remove any remaining "/"s.
 				episode=${episode#*---};
 				# the filetype and extsion
 				filetype=${episode#*---};
@@ -143,18 +138,27 @@ set -e
 				# If the file isn't already in the log and isn't too old, then lets go!
 				if ! grep "$downloadurl" "$downloadlog">/dev/null && ! $ageskip
 				then
+					fileepisodetitle=$episodetitle;
+					fileepisodetitle=$(echo ${fileepisodetitle// - /, }); # Replace " - " with ", " to avoid confusion in name convention.
+					fileepisodetitle=$(echo ${fileepisodetitle//\?/}); # Remove question marks.
+					fileepisodetitle=$(echo ${fileepisodetitle//:/, }); # Replace ":" with ", ".
+					fileepisodetitle=$(echo ${fileepisodetitle// \/ /, }); # Replace " / " with ", ".
+					fileepisodetitle=$(echo ${fileepisodetitle//\//, }); # Replace "/" with ",".
+					fileepisodetitle=$(echo ${fileepisodetitle//\//}); # Remove any remaining "/"s.
+					fileepisodetitle=$(echo "$fileepisodetitle" | tr -s " ") # Collapse multiple spaces
+					fileepisodetitle=$(echo ${fileepisodetitle// ,/,}) # Remove space preceeding a comma
 					if [ "$label2" == "" ];
 					then  # There are some variables that are different if you have only one "label" to work with.
 						mkdir -p "$destinationfolder/$label"; # Need to make sure the destination folder is there or wget won't work
 						album="$label";
-						finishedfilename="$destinationfolder/$label/$date - $episodetitle - $label.$fileext";
+						finishedfilename="$destinationfolder/$label/$date - $fileepisodetitle - $label.$fileext";
 						coverartlocation="$destinationfolder/$label/Folder.jpg";
 					fi
 					if [ "$label2" != "" ]; # Here's the other version, for if you have 2 labels.
 					then
 						mkdir -p "$destinationfolder/$label/$label2";
 						album="$label2";
-						finishedfilename="$destinationfolder/$label/$label2/$date - $episodetitle - $label - $label2.$fileext";
+						finishedfilename="$destinationfolder/$label/$label2/$date - $fileepisodetitle - $label - $label2.$fileext";
 						coverartlocation="$destinationfolder/$label/$label2/Folder.jpg";
 					fi
 					# If file DOES exist already, that seems weird.
