@@ -36,4 +36,8 @@ processorfile="/var/lib/ichapod/readpodcast.xsl"
 # You can usually just leave the default.
 debuglog="/podcasts/.ichapod-lastrun.log";
 
+# Temporary file that is downloaded to, and manipulated before copying to the final folder.
+# This reduces the chance of dangling files if the script crashes
+tempdownloadlocation="/tmp/downloaded_episode";
+
 # END SETTINGS ###################################
