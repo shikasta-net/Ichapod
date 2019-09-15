@@ -91,7 +91,9 @@ set -e
 				feedurl=$podcast;
 			fi #now we pull & process the feed items from the current podcast feed we are processing.
 			log_info "Now working on $label-$label2-$feedurl.";
-			wget -O - -o $debuglog $feedurl | xsltproc $processorfile - > /tmp/ichapodtmp.log;
+			wgetlog="/tmp/wget.log";
+			wget -O - -o $wgetlog $feedurl | xsltproc $processorfile - > /tmp/ichapodtmp.log;
+			cat $wgetlog >> $debuglog;
 			# Episodes are downloaded in reverse order so number in reverse from the most recent
 			episodenumber="$(wc -l < /tmp/ichapodtmp.log)";
 			while read episode
