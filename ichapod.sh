@@ -8,6 +8,21 @@
 # Move the settings to a global locaiton
 . /etc/default/ichapod
 
+redownload=false;
+
+# Get commandline arguments
+while :
+do
+	case $1 in
+		-r|--redownload)
+			redownload=true
+			;;
+		*)
+			break
+	esac
+	shift;
+done
+
 ####################################
 # Funcitons to simplify the script #
 ####################################
@@ -139,8 +154,9 @@ set -e
 					ageskip=true;
 					log_info "Skipping $label-$date-$episodetitle.$fileext, too old.";
 				fi
-				# If the file isn't already in the log and isn't too old, then lets go!
-				if ! grep "$downloadurl" "$downloadlog">/dev/null && ! $ageskip
+				# If the file isn't already in the log and isn't too old, then let's go!
+				# Or if it is in the log file and mode is set to redownload, then let's go!
+				if ( ! grep "$downloadurl" "$downloadlog">/dev/null && ! $ageskip && ! $redownload ) || ( $redownload && grep "$downloadurl" "$downloadlog">/dev/null )
 				then
 					fileepisodetitle=$episodetitle;
 					fileepisodetitle=$(echo ${fileepisodetitle// - /, }); # Replace " - " with ", " to avoid confusion in name convention.
@@ -197,7 +213,10 @@ set -e
 							log_info "End post-processing.";
 						fi # END Post-Processing Branch.
 						mv "$tempdownloadlocation" "$finishedfilename"
-						echo "$downloadurl" >> "$downloadlog"; # Log it, and tag it.
+						if ! grep "$downloadurl" "$downloadlog">/dev/null
+						then
+							echo "$downloadurl" >> "$downloadlog"; # Log it, and tag it.
+						fi
 					fi # END Downloader
 				fi # END Downloader Branch.
 				episodenumber=$((episodenumber - 1)); # Decrement the episode counter
