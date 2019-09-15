@@ -188,33 +188,34 @@ set -e
 					then
 						log_info "URL not found in log, but $finishedfilename but file exists anyway.";
 					fi
+					tempfile="$tempdownloadlocation.$fileext";
 					# only download if file doesn't already exist
 					if [ ! -e "$finishedfilename" ]
 					then
 						log_info "Downloading $finishedfilename.";
-						wget -q -x -t 10 -O "$tempdownloadlocation" "$downloadurl"; # Download the file.
-						if [ -e "$tempdownloadlocation" ] && [ "$fileext" == "mp3" ] # If the downloaded file exists, then we can proceed to deal with it.
+						wget -q -x -t 10 -O "$tempfile" "$downloadurl"; # Download the file.
+						if [ -e "$tempfile" ] && [ "$fileext" == "mp3" ] # If the downloaded file exists, then we can proceed to deal with it.
 						then
 							log_info "Now running eyeD3.";
-							eyeD3 --no-color --to-v2.3 --set-text-frame=TPE2:"$label" --genre=Podcast --year=$year --title="$episodetitle" --album="$album" --artist="$label" --track="$episodenumber" "$tempdownloadlocation">>"$debuglog" 2>&1;
+							eyeD3 --no-color --to-v2.3 --set-text-frame=TPE2:"$label" --genre=Podcast --year=$year --title="$episodetitle" --album="$album" --artist="$label" --track="$episodenumber" "$tempfile">>"$debuglog" 2>&1;
 							log_info "eyeD3 done."
 							if [ -e "$coverartlocation" ] # Check for cover art file, and if it exists, tag it into the file.
 							then
 								log_info "Now tagging the artwork in.";
-								eyeD3 --no-color --remove-images "$tempdownloadlocation">>"$debuglog";
-								eyeD3 --no-color --to-v2.3 --add-image="$coverartlocation":FRONT_COVER "$tempdownloadlocation">>"$debuglog";
+								eyeD3 --no-color --remove-images "$tempfile">>"$debuglog";
+								eyeD3 --no-color --to-v2.3 --add-image="$coverartlocation":FRONT_COVER "$tempfile">>"$debuglog";
 								log_info "eyeD3 done."
 							fi
 							# Check the mp3 to see if it has already been run through ReplayGain and skip it if it has.
-							if ! eyeD3 "$tempdownloadlocation" | grep replaygain_reference_loudness>/dev/null;
+							if ! eyeD3 "$tempfile" | grep replaygain_reference_loudness>/dev/null;
 							then
 								log_info "Applying ReplayGain to file.";
-								replaygain -f --no-album "$tempdownloadlocation">>"$debuglog" 2>&1; # Normalize the file
+								replaygain -f --no-album "$tempfile">>"$debuglog" 2>&1; # Normalize the file
 								log_info "ReplayGain done."
 							fi
 							log_info "End post-processing.";
 						fi # END Post-Processing Branch.
-						mv "$tempdownloadlocation" "$finishedfilename"
+						mv "$tempfile" "$finishedfilename"
 						if ! grep "$downloadurl" "$downloadlog">/dev/null
 						then
 							echo "$downloadurl" >> "$downloadlog"; # Log it, and tag it.
