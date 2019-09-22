@@ -42,6 +42,8 @@ then
 	mkdir -p "$(dirname $dailylog)"
 	echo "$dailylogheader">>"$dailylog";
 fi
+# Empty the latest run log
+>$debuglog;
 log_info "Ichapod started.";
 # Wrap up the functional stuff using flock to prevent concurrent runs.
 set -e
