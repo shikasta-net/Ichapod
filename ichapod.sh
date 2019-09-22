@@ -125,7 +125,9 @@ set -e
 				episodetitle=$(echo ${episodetitle//$(printf '\xE2\x80\x93')/-}); # Replace unicode endash with "-" in the title.
 				episodetitle=$(echo ${episodetitle//$(printf '\xE2\x80\x94')/-}); # Replace unicode emdash with "-" in the title.
 				episodetitle=$(echo ${episodetitle//$(printf '\xE2\x80\x98')/\'}); # Replace unicode left tic with "'" in the title.
-				episodetitle=$(echo ${episodetitle//$(printf '\xE2\x80\x99')/\'}); # Replace unicode rigt tic with "'" in the title.
+				episodetitle=$(echo ${episodetitle//$(printf '\xE2\x80\x99')/\'}); # Replace unicode right tic with "'" in the title.
+				episodetitle=$(echo ${episodetitle//$(printf '\xE2\x80\x9C')/\"}); # Replace unicode left double tic with """ in the title.
+				episodetitle=$(echo ${episodetitle//$(printf '\xE2\x80\x9D')/\"}); # Replace unicode right double tic with """ in the title.
 				episode=${episode#*---};
 				# the filetype and extsion
 				filetype=${episode#*---};
