@@ -9,9 +9,9 @@ from Podcast import Podcast
 class TestPodcast(unittest.TestCase):
 
     @parameterized.expand([
-        ["Two part",
-         "Author---http://url.url.co.url/someplace/here.rss",
-         ["Author", "http://url.url.co.url/someplace/here.rss"],
+        ["URL Only",
+         "http://url.url.co.url/someplace/here.rss",
+         ["http://url.url.co.url/someplace/here.rss"],
         ],
         ["Three part",
          "Author---Series---http://url.url.co.url/someplace/here.rss",
@@ -32,13 +32,17 @@ class TestPodcast(unittest.TestCase):
 
 
     @parameterized.expand([
+        ["URL only",
+         "http://url.url.co.url/someplace/here.rss",
+         Podcast("http://url.url.co.url/someplace/here.rss"),
+        ],
         ["Two part",
          "Author---http://url.url.co.url/someplace/here.rss",
-         ["Author", None, "http://url.url.co.url/someplace/here.rss"],
+         Podcast("http://url.url.co.url/someplace/here.rss", "Author"),
         ],
         ["Three part",
          "Author---Series---http://url.url.co.url/someplace/here.rss",
-         ["Author", "Series", "http://url.url.co.url/someplace/here.rss"],
+         Podcast("http://url.url.co.url/someplace/here.rss", "Author", "Series"),
         ],
         ["Ignored simple",
          "#Author---Series---http://url.url.co.url/someplace/here.rss",
@@ -49,11 +53,14 @@ class TestPodcast(unittest.TestCase):
          None,
         ],
     ])
-    def test_create(self, name: str, input: str, expected: List[str]):
+    def test_create(self, name: str, input: str, expected: 'Podcast'):
         result = Podcast.create(input)
-        if expected :
-            self.assertEqual(result.author, expected[0])
-            self.assertEqual(result.series, expected[1])
-            self.assertEqual(result.url, expected[2])
-        else :
-            self.assertEqual(result, expected)
+        self.assertEqual(result, expected)
+
+    @unittest.skip("Network reliance")
+    def test_get_manifest(self):
+        url = "http://guiltyfeminist.libsyn.com/rss"
+
+        result = Podcast(url)._get_manifest()
+        self.assertIsInstance(result, dict)
+        self.assertIsNotNone(result)
