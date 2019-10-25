@@ -1,4 +1,6 @@
 
+import logging
+import traceback
 from typing import Dict, Iterator, List
 import urllib3
 import xmltodict
@@ -46,13 +48,13 @@ class Podcast:
             continue
 
     def _get_manifest(self) -> Dict:
-        http = urllib3.PoolManager()
-
-        response = http.request('GET', self.url, preload_content=False)
-        try:
-            data: dict = xmltodict.parse(response.data)
-        except:
-            error(F"Failed to parse xml from {url} ({traceback.format_exc()})")
+        with urllib3.PoolManager() as http:
+            response = http.request('GET', self.url, preload_content=False)
+            try:
+                data: dict = xmltodict.parse(response.data)
+            except:
+                logging.error(F"Failed to parse xml from {url}")
+                logging.debug(traceback.format_exc())
 
         return data
 
