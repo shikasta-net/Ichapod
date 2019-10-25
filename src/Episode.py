@@ -1,7 +1,10 @@
 
+
+import logging
 import mimetypes
-from datetime import datetime
 from pathlib import Path
+
+from util import *
 
 class Episode:
 
@@ -17,44 +20,34 @@ class Episode:
 
     @classmethod
     def create(cls, episode_number: int, author: str, album: str, episode: dict):
-        if not episode['enclosure']['@url']:
-            return None
+        try:
+            if not episode['enclosure']['@url']:
+                return None
 
-        return cls(
-            url = episode['enclosure']['@url'],
-            number = episode_number,
-            title = episode['title'],
-            author = author,
-            album = album,
-            date = cls._convert_date(episode['pubDate']),
-            type = mimetypes.guess_extension(episode['enclosure']['@type']),
-            guid = episode['guid']
-        )
+            logging.debug(F"Creating episode from { dict({ part:episode[part] for part in ['enclosure', 'title', 'pubDate', 'guid'] }, **{'number':episode_number, 'author':author, 'album': album}) }")
+
+            return cls(
+                url = episode['enclosure']['@url'],
+                number = episode_number,
+                title = remove_unicode(episode['title']),
+                author = remove_unicode(author),
+                album = remove_unicode(album),
+                date = convert_date(episode['pubDate']),
+                type = mimetypes.guess_extension(episode['enclosure']['@type']),
+                guid = episode['guid']
+            )
+        except KeyError as e:
+            logging.warning(F"Unable to find key {e} while creating Episode {episode_number} - {author} - {album}")
+
+        return None
 
     def download(self, base_path: Path) -> Path:
         podcast_file = base_path / str(self)
         podcast_file.touch()
         return podcast_file
 
-    @staticmethod
-    def _convert_date(date: str) -> datetime:
-        input = "%a, %d %b %Y %H:%M:%S %z"
-        output = "%Y-%m-%d-%H%M"
-        return datetime.strptime(date, input).strftime(output)
-
     def _filename(self) -> str:
-        name = F"{self.date} - {self.title} - {self.author} - {self.album}{self.type}" \
-        .replace(u'\u2013', '-') \
-        .replace(u'\u2014', '-') \
-        .replace(u'\u2018', '\'') \
-        .replace(u'\u2019', '\'') \
-        .replace(u'\u201c', '\"') \
-        .replace(u'\u201d', '\"')
-
-        #check that the character cleanup worked
-        name.encode('ascii', 'strict')
-
-        return name
+        return sanitise_path(F"{self.date} - {self.title} - {self.author} - {self.album}{self.type}")
 
     def __eq__(self, other):
         if not other:
