@@ -1,5 +1,6 @@
 
 
+import collections
 import logging
 import mimetypes
 from pathlib import Path
@@ -32,6 +33,8 @@ class Episode:
 
             logging.debug(F"Creating episode from { dict({ part:episode[part] for part in ['enclosure', 'title', 'pubDate', 'guid'] }, **{'number':episode_number, 'author':author, 'album': album}) }")
 
+            guid = episode['guid']['#text'] if type(episode['guid']) == collections.OrderedDict else episode['guid']
+
             return cls(
                 url = url,
                 number = episode_number,
@@ -40,7 +43,7 @@ class Episode:
                 album = remove_unicode(album),
                 date = convert_date(episode['pubDate']),
                 type = cls._guess_extension(episode['enclosure']['@type'], url),
-                guid = episode['guid']
+                guid = guid
             )
         except KeyError as e:
             logging.warning(F"Unable to find key {e} while creating Episode {episode_number} - {author} - {album}")

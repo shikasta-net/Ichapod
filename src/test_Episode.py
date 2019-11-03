@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from collections import OrderedDict
 import logging
 from typing import Tuple
 import unittest
@@ -18,17 +19,17 @@ class TestPodcast(unittest.TestCase):
         ],
         ["example A m4a",
          ("13", "author", "album", dict(title='title',
-         pubDate='Mon, 21 Oct 2019 11:00:00 +0000', guid='slkdfjinveosij', enclosure={'@url':"http://yes.no.co.uk/file.m4a", '@type':"audio/mp4"})),
+         pubDate='Mon, 21 Oct 2019 11:00:00 +0000', guid='slkdfjinveosij', enclosure=OrderedDict({'@url':"http://yes.no.co.uk/file.m4a", '@type':"audio/mp4"}))),
          Episode("http://yes.no.co.uk/file.m4a", "13", "title", "author", "album", "2019-10-21-1100", ".m4a", "slkdfjinveosij"),
         ],
         ["example B mp4",
          ("13", u"author\u2019s", u"\u201calbum\u201d", dict(title=u"ti\u2013tle",
-         pubDate='Mon, 21 Oct 2019 11:00:00 +0000', guid='slkdfjinveosij', enclosure={'@url':"http://yes.no.co.uk/file.mp4", '@type':"audio/mp4"})),
+         pubDate='Mon, 21 Oct 2019 11:00:00 +0000', guid=OrderedDict({'#text':'slkdfjinveosij'}), enclosure=OrderedDict({'@url':"http://yes.no.co.uk/file.mp4", '@type':"audio/mp4"}))),
          Episode("http://yes.no.co.uk/file.mp4", "13", "ti-tle", "author's", "\"album\"", "2019-10-21-1100", ".m4a", "slkdfjinveosij"),
         ],
         ["example B mp3",
          ("13", u"author\u2019s", u"\u201calbum\u201d", dict(title=u"ti\u2013tle",
-         pubDate='Mon, 21 Oct 2019 11:00:00 +0000', guid='slkdfjinveosij', enclosure={'@url':"http://yes.no.co.uk/file.mp3", '@type':"audio/mpeg"})),
+         pubDate='Mon, 21 Oct 2019 11:00:00 +0000', guid=OrderedDict({'#text':'slkdfjinveosij'}), enclosure=OrderedDict({'@url':"http://yes.no.co.uk/file.mp3", '@type':"audio/mpeg"}))),
          Episode("http://yes.no.co.uk/file.mp3", "13", "ti-tle", "author's", "\"album\"", "2019-10-21-1100", ".mp3", "slkdfjinveosij"),
         ],
         ["Error",
