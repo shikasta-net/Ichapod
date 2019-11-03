@@ -5,7 +5,9 @@ import mimetypes
 import mutagen
 from pathlib import Path
 import r128gain
+import shutil
 import traceback
+import urllib3
 
 from util import *
 
@@ -73,10 +75,16 @@ class Episode:
             logging.debug(traceback.format_exc())
         return None
 
-    def download(self, base_path: Path) -> Path:
+    def download_to(self, base_path: Path) -> Path:
         podcast_file = base_path / str(self)
-        podcast_file.touch()
-        return podcast_file
+
+        logging.info(F"Downloading {podcast_file.name}")
+
+        self._download(self.url, to=podcast_file)
+        self._tag_episode(podcast_file)
+        self._replay_gain(podcast_file)
+
+        return podcast_file if podcast_file.exists() else None
 
     @classmethod
     def _guess_extension(cls, mimetype: str, url: str) -> str:
@@ -90,6 +98,18 @@ class Episode:
             return matches[0]
 
         return extensions[0]
+
+    @staticmethod
+    def _download(url: str, to: Path) :
+        logging.debug(F"Downloading {url} to {to}")
+
+        with urllib3.PoolManager() as http:
+            try:
+                with http.request('GET', url, preload_content=False) as response, open(to, 'wb') as out_file:
+                    shutil.copyfileobj(response, out_file)
+            except:
+                logging.error(F"Failed to download {url} to {to}")
+                logging.debug(traceback.format_exc())
 
     @staticmethod
     def _replay_gain(podcast_file: Path) :
