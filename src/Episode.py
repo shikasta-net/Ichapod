@@ -6,6 +6,11 @@ from pathlib import Path
 
 from util import *
 
+mimetypes.add_type('audio/mp3', '.mp3')
+mimetypes.add_type('audio/mpeg', '.mp3')
+mimetypes.add_type('audio/mp4', '.m4a')
+mimetypes.add_type('audio/x-m4a', '.m4a')
+
 class Episode:
 
     def __init__(self, url: str, number: int, title: str, author: str, album: str, date: str, type: str, guid: str):
@@ -21,19 +26,20 @@ class Episode:
     @classmethod
     def create(cls, episode_number: int, author: str, album: str, episode: dict):
         try:
-            if not episode['enclosure']['@url']:
+            url = episode['enclosure']['@url']
+            if not url:
                 return None
 
             logging.debug(F"Creating episode from { dict({ part:episode[part] for part in ['enclosure', 'title', 'pubDate', 'guid'] }, **{'number':episode_number, 'author':author, 'album': album}) }")
 
             return cls(
-                url = episode['enclosure']['@url'],
+                url = url,
                 number = episode_number,
                 title = remove_unicode(episode['title']),
                 author = remove_unicode(author),
                 album = remove_unicode(album),
                 date = convert_date(episode['pubDate']),
-                type = mimetypes.guess_extension(episode['enclosure']['@type']),
+                type = cls._guess_extension(episode['enclosure']['@type'], url),
                 guid = episode['guid']
             )
         except KeyError as e:
@@ -45,6 +51,19 @@ class Episode:
         podcast_file = base_path / str(self)
         podcast_file.touch()
         return podcast_file
+
+    @classmethod
+    def _guess_extension(cls, mimetype: str, url: str) -> str:
+        extensions =  mimetypes.guess_all_extensions(mimetype)
+        logging.debug(F"Getting extentions {extensions} from {mimetype}")
+
+        matches = [ extension for extension in extensions if extension in url ]
+        logging.debug(F"Of which {matches} matchs {url}")
+
+        if len(matches) == 1:
+            return matches[0]
+
+        return extensions[0]
 
     def _filename(self) -> str:
         return sanitise_path(F"{self.date} - {self.title} - {self.author} - {self.album}{self.type}")

@@ -9,8 +9,6 @@ from Podcast import Podcast
 
 config_file = '../settings.yml' # TODO realtive and hardcoded?
 
-mimetypes.add_type('audio/mp4', '.mp4')
-
 def podcast_list(filename: Path) -> Iterator['Podcast']:
     with open(filename, 'r') as podcast_list:
         for entry in podcast_list.readlines():
