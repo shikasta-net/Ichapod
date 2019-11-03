@@ -1,9 +1,10 @@
 
-
 import collections
 import logging
 import mimetypes
+import mutagen
 from pathlib import Path
+import traceback
 
 from util import *
 
@@ -25,7 +26,7 @@ class Episode:
         self.guid = guid
 
     @classmethod
-    def create(cls, episode_number: int, author: str, album: str, episode: dict):
+    def create(cls, episode_number: int, author: str, album: str, episode: dict) -> 'Episode':
         try:
             url = episode['enclosure']['@url']
             if not url:
@@ -48,6 +49,27 @@ class Episode:
         except KeyError as e:
             logging.warning(F"Unable to find key {e} while creating Episode {episode_number} - {author} - {album}")
 
+        return None
+
+    @classmethod
+    def load(cls, file_path: Path) -> 'Episode':
+        file_string = str(file_path)
+        try:
+            audio = mutagen.File(file_string, easy=True)
+
+            return cls(
+                url = audio['website'][0],
+                number = audio['tracknumber'][0],
+                title = audio['title'][0],
+                author = audio['artist'][0],
+                album = audio['album'][0],
+                date = convert_date(audio['date'][0]),
+                type = file_path.suffix,
+                guid = audio['catalognumber'][0]
+            )
+        except:
+            logging.error(F"Failed to load file {file_path}")
+            logging.debug(traceback.format_exc())
         return None
 
     def download(self, base_path: Path) -> Path:

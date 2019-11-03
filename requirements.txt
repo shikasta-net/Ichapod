@@ -1,3 +1,4 @@
+mutagen==1.38
 PyYAML==3.13
 pytz==2019.3
 requests==2.22

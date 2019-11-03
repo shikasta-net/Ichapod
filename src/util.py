@@ -40,6 +40,9 @@ __tzinfos = {
 }
 
 def convert_date(date: str) -> str:
+    loading_date = re.match(r'^(?P<date>\d{4}-\d{2}-\d{2}).(?P<time>\d{0,3})$', date)
+    if loading_date:
+        date = F"{loading_date.group('date')} {int(loading_date.group('time')):04}"
     output = "%Y-%m-%d-%H%M"
     return parser.parse(date, tzinfos=__tzinfos).strftime(output)
 
