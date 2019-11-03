@@ -90,6 +90,19 @@ class Episode:
 
         return extensions[0]
 
+    def _tag_episode(self, podcast_file: Path) :
+        if podcast_file.exists() :
+            metadata = mutagen.File(str(podcast_file), easy=True)
+            metadata['album'] = self.album
+            metadata['artist'] = self.author
+            metadata['catalognumber'] = self.guid
+            metadata['date'] = self.date
+            metadata['genre'] = "Podcast"
+            metadata['tracknumber'] = [self.number]
+            metadata['title'] = self.title
+            metadata['website'] = self.url
+            metadata.save()
+
     def _filename(self) -> str:
         return sanitise_path(F"{self.date} - {self.title} - {self.author} - {self.album}{self.type}")
 
