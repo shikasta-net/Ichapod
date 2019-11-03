@@ -1,6 +1,7 @@
 mutagen==1.38
 PyYAML==3.13
 pytz==2019.3
+r128gain==0.9
 requests==2.22
 typing==3.7.4
 urllib3>=1.25

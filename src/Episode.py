@@ -4,6 +4,7 @@ import logging
 import mimetypes
 import mutagen
 from pathlib import Path
+import r128gain
 import traceback
 
 from util import *
@@ -89,6 +90,15 @@ class Episode:
             return matches[0]
 
         return extensions[0]
+
+    @staticmethod
+    def _replay_gain(podcast_file: Path) :
+        if podcast_file.exists() :
+            logging.debug(F"Compute replay gain of {podcast_file}")
+
+            error = r128gain.process([str(podcast_file)])
+            if error > 0 :
+                raise Exception(F"Unable to process gain on {podcast_file}")
 
     def _tag_episode(self, podcast_file: Path) :
         if podcast_file.exists() :
