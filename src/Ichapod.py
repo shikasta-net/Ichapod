@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import datetime
+import logging, logging.config
 import mimetypes
 from pathlib import Path
 from typing import Iterator
@@ -8,6 +10,7 @@ import yaml
 from Podcast import Podcast
 
 config_file = '../settings.yml' # TODO realtive and hardcoded?
+logging.config.fileConfig('../log.conf')
 
 def podcast_list(filename: Path) -> Iterator['Podcast']:
     with open(filename, 'r') as podcast_list:
@@ -19,6 +22,8 @@ def podcast_list(filename: Path) -> Iterator['Podcast']:
 
 
 if __name__ == "__main__":
+    logging.info(F"Starting update {datetime.datetime.now().replace(microsecond=0)}\n{'-'*43}")
+
     with open(config_file, 'r') as ymlfile:
         config = yaml.load(ymlfile)
 
@@ -30,3 +35,5 @@ if __name__ == "__main__":
             #if not episode exists
             episode_path = episode.download(temp_download_location)
             print(episode_path)
+
+    logging.info(F"Done updating\n{'='*43}")
