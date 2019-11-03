@@ -5,7 +5,8 @@ from typing import Dict, Iterator, List
 import urllib3
 import xmltodict
 
-from Episode import Episode
+from Episode import Episode, Image
+from util import *
 
 class Podcast:
 
@@ -58,6 +59,10 @@ class Podcast:
 
         return data
 
+    def _folder(self):
+        if self.series:
+            return F"{sanitise_path(self.author)}/{sanitise_path(self.series)}"
+        return sanitise_path(F"{self.author}")
 
     def __eq__(self, other):
         return (
@@ -67,4 +72,4 @@ class Podcast:
         )
 
     def __str__(self):
-        return F"{self.url}, {self.author}, {self.series}"
+        return self._folder()
