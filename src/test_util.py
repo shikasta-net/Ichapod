@@ -10,12 +10,22 @@ class TestUtil(unittest.TestCase):
 
     @parameterized.expand([
         ["Standard",
-         "Mon, 21 Oct 2019 11:00:00 +0000",
-         "2019-10-21-1100",
+         "Mon, 20 Oct 2019 11:00:00 +0000",
+         "2019-10-20-1100",
         ],
-        ["Standard",
+        ["Timezone letters GMT",
          "Mon, 21 Oct 2019 11:00:00 GMT",
          "2019-10-21-1100",
+        ],
+        ["Timezone number plus 4",
+         "Mon, 21 Oct 2019 11:00:00 +0400",
+         "2019-10-21-1100",
+         #"2019-10-21-0700",
+        ],
+        ["Timezone letters EDT",
+         "Wed, 23 Oct 2019 12:00:00 EDT",
+         "2019-10-23-1200",
+         #"2019-10-23-1600",
         ],
     ])
     def test_parse_date(self, name:str, input: str, expected: str):

@@ -1,6 +1,8 @@
 
 from datetime import datetime
+from dateutil import parser, tz
 import logging
+import pytz
 import re
 
 __unicode_map = {
@@ -21,13 +23,25 @@ __valid_path_map = {
     ord('?'):None,
 }
 
-def convert_date(date: str) -> datetime:
-    if date[-1].isdigit() :
-        input = "%a, %d %b %Y %H:%M:%S %z"
-    elif date[-1].isalpha() :
-        input = "%a, %d %b %Y %H:%M:%S %Z"
+__tzinfos = {
+    'GMT': tz.gettz('Europe/GMT'),
+    'PST': tz.gettz('US/Pacific'),
+    'PDT': tz.gettz('US/Pacific'),
+    'PT': tz.gettz('US/Pacific'),
+    'MST': tz.gettz('US/Mountain'),
+    'MDT': tz.gettz('US/Mountain'),
+    'MT': tz.gettz('US/Mountain'),
+    'CST': tz.gettz('US/Central'),
+    'CDT': tz.gettz('US/Central'),
+    'CT': tz.gettz('US/Central'),
+    'EST': tz.gettz('US/Eastern'),
+    'EDT': tz.gettz('US/Eastern'),
+    'ET': tz.gettz('US/Eastern')
+}
+
+def convert_date(date: str) -> str:
     output = "%Y-%m-%d-%H%M"
-    return datetime.strptime(date, input).strftime(output)
+    return parser.parse(date, tzinfos=__tzinfos).strftime(output)
 
 def remove_unicode(string: str) -> str :
     clean = string.translate(__unicode_map)
