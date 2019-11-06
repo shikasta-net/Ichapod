@@ -77,6 +77,27 @@ class TestUtil(unittest.TestCase):
 
     @parameterized.expand([
         ["Simple",
+         "A generally good title",
+         "A generally good title",
+        ],
+        ["Unicode",
+         "the Names \u2013 A generally good title",
+         "the Names: A generally good title",
+        ],
+        ["Wrong punctuation",
+         "What is going on here: a better look at things?",
+         "What is going on here: a better look at things?",
+        ],
+        ["Wrong punctuation",
+         "What is going on here - a better look at things",
+         "What is going on here: a better look at things",
+        ],
+    ])
+    def test_clean_title(self, name:str, input: str, expected: str):
+        self.assertEqual(clean_title(input), expected)
+
+    @parameterized.expand([
+        ["Simple",
          "file.ext",
          "file.ext",
         ],

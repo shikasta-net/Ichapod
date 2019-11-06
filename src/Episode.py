@@ -42,7 +42,7 @@ class Episode:
             return cls(
                 url = url,
                 number = episode_number,
-                title = remove_unicode(episode['title']),
+                title = clean_title(episode['title']),
                 author = remove_unicode(author),
                 album = remove_unicode(album),
                 date = convert_date(episode['pubDate']),

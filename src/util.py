@@ -58,6 +58,13 @@ def remove_unicode(string: str) -> str :
 
     return clean
 
+def clean_title(string: str) -> str:
+    clean = remove_unicode(string)
+    clean = re.sub(r' - ', r': ', clean)
+    clean = squelch_whitespace(clean)
+
+    return clean
+
 def sanitise_path(string: str) -> str:
     clean = remove_unicode(string).translate(__valid_path_map)
     clean = squelch_whitespace(clean)
