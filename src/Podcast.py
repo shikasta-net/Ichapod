@@ -60,7 +60,7 @@ class Podcast:
         return data
 
     def _folder(self):
-        if self.series:
+        if self.series and self.series != self.author:
             return F"{sanitise_path(self.author)}/{sanitise_path(self.series)}"
         return sanitise_path(F"{self.author}")
 

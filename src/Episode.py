@@ -134,7 +134,8 @@ class Episode:
             metadata.save()
 
     def _filename(self) -> str:
-        return sanitise_path(F"{self.date} - {self.title} - {self.author} - {self.album}{self.type}")
+        by = self.author if self.album == self.author or not self.album else F"{self.author} - {self.album}"
+        return sanitise_path(F"{self.date} - {self.title} - {by}{self.type}")
 
     def __eq__(self, other):
         if not other:
