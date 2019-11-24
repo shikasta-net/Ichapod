@@ -3,6 +3,7 @@ import collections
 import logging
 import mimetypes
 import mutagen
+from mutagen import easymp4
 from pathlib import Path
 import r128gain
 import shutil
@@ -15,6 +16,9 @@ mimetypes.add_type('audio/mp3', '.mp3')
 mimetypes.add_type('audio/mpeg', '.mp3')
 mimetypes.add_type('audio/mp4', '.m4a')
 mimetypes.add_type('audio/x-m4a', '.m4a')
+
+mutagen.easymp4.EasyMP4Tags.RegisterTextKey('catalognumber','egid')
+mutagen.easymp4.EasyMP4Tags.RegisterTextKey('website','purl')
 
 class Episode:
 
