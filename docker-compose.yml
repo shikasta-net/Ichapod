@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  ichapod:
+    image: shikasta/ichapod:2.0
+    build: .
+    volumes:
+      - "./podcasts.txt:/var/lib/ichapod/podcasts.txt"
+      - "/tmp/podcasts:/podcasts"
+    command:
+      # - "--quiet"
+      # - "--debug"
+      # - "--dry-run"
+      # - "--log-config=/opt/ichapod/log.conf"
+      - "/var/lib/ichapod/podcasts.txt"
+      - "/podcasts"
+    user: "1000:10000"

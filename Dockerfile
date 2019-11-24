@@ -1,21 +1,20 @@
-FROM ubuntu:14.04
+FROM python:3.6
 
 MAINTAINER Kym Eden
 
-# Set the locale
-ENV LANG='C.UTF-8' LC_ALL='C.UTF-8'
+RUN apt-get update && apt-get install -y ffmpeg
 
-RUN apt-get update && \
-    apt-get dist-upgrade --yes --no-install-recommends --no-install-suggests && \
-    apt-get install --yes --no-install-recommends --no-install-suggests ca-certificates wget xsltproc eyed3 gstreamer1.0-plugins-bad python-rgain && \
-    apt-get clean
+ADD requirements.txt log.conf /opt/ichapod/
+RUN pip3 install -r /opt/ichapod/requirements.txt
 
-ADD ichapod.sh /usr/sbin/ichapod
-ADD readpodcast.xsl /var/lib/ichapod/readpodcast.xsl
-ADD settings /etc/default/ichapod
+ADD src /opt/ichapod/src
 ADD podcasts.txt /var/lib/ichapod/podcasts.txt
 
 VOLUME /podcasts
 
-ENTRYPOINT ["ichapod"]
-CMD []
+RUN groupadd --gid 10000 media && useradd --no-log-init -r -g media ichapod
+
+USER ichapod
+
+ENTRYPOINT ["/opt/ichapod/src/Ichapod.py"]
+CMD ["--quiet", "--log-config /opt/ichapod/log.config", "/var/lib/ichapod/podcasts.txt", "/podcasts"]
