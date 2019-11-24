@@ -132,7 +132,7 @@ class Episode:
             metadata['catalognumber'] = self.guid
             metadata['date'] = self.date
             metadata['genre'] = "Podcast"
-            metadata['tracknumber'] = [self.number]
+            metadata['tracknumber'] = [str(self.number)]
             metadata['title'] = self.title
             metadata['website'] = self.url
             metadata.save()
