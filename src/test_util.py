@@ -5,6 +5,7 @@ import unittest
 from parameterized import parameterized
 
 from util import *
+from util import __ok_unicode as ok_unicode
 
 class TestUtil(unittest.TestCase):
 
@@ -70,6 +71,10 @@ class TestUtil(unittest.TestCase):
         ["fix whitespace",
          u"Lisa   Randall:\t\tDark Matter,\tDinosaurs   , and Extra Dimensions",
          "Lisa Randall: Dark Matter, Dinosaurs, and Extra Dimensions"
+        ],
+        ["ignore ok",
+         "".join(ok_unicode),
+         "".join(ok_unicode)
         ],
     ])
     def test_remove_unicode(self, name:str, input: str, expected: str):

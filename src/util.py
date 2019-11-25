@@ -17,6 +17,25 @@ __unicode_map = {
     ord(u'\u201d'):'\"',
 }
 
+__ok_unicode = [
+    u'\xc1',
+    u'\xd3',
+    u'\xe1',
+    u'\xe2',
+    u'\xe4',
+    u'\xe9',
+    u'\xeb',
+    u'\xed',
+    u'\xf1',
+    u'\xf8',
+    u'\xfc',
+    u'\u0160',
+    u'\u0161',
+    u'\u01a1',
+    u'\u0301',
+    u'\u1ea1',
+]
+
 __valid_path_map = {
     ord(':'):', ',
     ord('/'):', ',
@@ -52,7 +71,7 @@ def remove_unicode(string: str) -> str :
 
     #check that the character cleanup worked
     try :
-        clean.encode('ascii', 'strict')
+        clean.translate({ ord(i):None for i in __ok_unicode }).encode('ascii', 'strict')
     except UnicodeEncodeError as e:
         logging.warning(F"Failed to remove character from {string}: {e}")
 
