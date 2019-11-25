@@ -1,5 +1,4 @@
 mutagen==1.38
-PyYAML==3.13
 pytz==2019.3
 r128gain==0.9
 requests==2.22

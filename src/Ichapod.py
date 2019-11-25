@@ -6,14 +6,15 @@ import logging, logging.config
 import mimetypes
 from pathlib import Path
 from typing import Iterator
-import yaml
 
 from Episode import Episode
 from Podcast import Podcast
 
 parser = argparse.ArgumentParser(description='Download podcasts.')
-parser.add_argument('--config', default='../settings.yml', help='Config file name')
-parser.add_argument('--log-config', default='../log.conf', help='Logging config file name')
+parser.add_argument('podcast_list', type=Path, help='Podcast list')
+parser.add_argument('destination_folder', type=Path, help='Where podcasts are saved')
+parser.add_argument('--temp_download_location', type=Path, default='/tmp/downloaded_episode', help='Where podcasts are saved')
+parser.add_argument('--log-config', type=Path, default='../log.conf', help='Logging config file name')
 parser.add_argument('--dry-run', '-n', action='store_true', help='Don\'t run the real fetcher')
 parser.add_argument('--over-write', '-f', action='store_true', help='Replace an existing file if found')
 log_arg = parser.add_mutually_exclusive_group()
@@ -59,9 +60,6 @@ def move(downloaded_file: Path, podcast_file: Path, over_write=False) -> bool :
 
 
 if __name__ == "__main__":
-    config_file = args.config
-    with open(config_file, 'r') as ymlfile:
-        config = yaml.load(ymlfile)
 
     actual_run = not args.dry_run
 
@@ -74,12 +72,12 @@ if __name__ == "__main__":
         logging.warning("OVERWRITE IS ENABLED")
     logging.getLogger().setLevel(log_level)
 
-    temp_download_location = Path(config['temp_download_location'])
+    temp_download_location = args.temp_download_location
     temp_download_location.mkdir(parents=True, exist_ok=True)
 
-    podcast_store_location = Path(config['destination_folder'])
+    podcast_store_location = args.destination_folder
 
-    for podcast in podcast_list(Path(config['podcast_list'])):
+    for podcast in podcast_list(args.podcast_list):
         for episode in podcast.episodes():
             #skip already downloaded
             podcast_file = podcast_store_location / str(podcast) / str(episode)
