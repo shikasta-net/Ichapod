@@ -74,11 +74,14 @@ def remove_unicode(string: str) -> str :
         clean.translate({ ord(i):None for i in __ok_unicode }).encode('ascii', 'strict')
     except UnicodeEncodeError as e:
         logging.warning(F"Failed to remove character from {string}: {e}")
+        return None
 
     return clean
 
 def clean_title(string: str) -> str:
     clean = remove_unicode(string)
+    if not clean :
+        return None
     clean = re.sub(r' - ', r': ', clean)
     clean = squelch_whitespace(clean)
 

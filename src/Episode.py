@@ -22,14 +22,14 @@ mutagen.easymp4.EasyMP4Tags.RegisterTextKey('website','purl')
 
 class Episode:
 
-    def __init__(self, url: str, number: int, title: str, author: str, album: str, date: str, type: str, guid: str):
+    def __init__(self, url: str, number: int, title: str, author: str, album: str, date: str, extension: str, guid: str):
         self.url = url
         self.number = int(number)
         self.title = title
         self.author = author
         self.album = album
         self.date = date
-        self.type = type
+        self.extension = extension
         self.guid = guid
 
     @classmethod
@@ -43,16 +43,14 @@ class Episode:
 
             guid = episode['guid']['#text'] if type(episode['guid']) == collections.OrderedDict else episode['guid']
 
-            return cls(
-                url = url,
-                number = episode_number,
-                title = clean_title(episode['title']),
-                author = remove_unicode(author),
-                album = remove_unicode(album),
-                date = convert_date(episode['pubDate']),
-                type = cls._guess_extension(episode['enclosure']['@type'], url),
-                guid = guid
-            )
+            title = clean_title(episode['title'])
+            author = remove_unicode(author)
+            album = remove_unicode(album)
+            date = convert_date(episode['pubDate'])
+            extension = cls._guess_extension(episode['enclosure']['@type'], url)
+
+            if guid and episode_number and title and author and album and date and url and extension :
+                return cls(url, episode_number, title, author, album, date, extension, guid)
         except KeyError as e:
             logging.warning(F"Unable to find key {e} while creating Episode {episode_number} - {author} - {album}")
 
@@ -71,7 +69,7 @@ class Episode:
                 author = audio['artist'][0],
                 album = audio['album'][0],
                 date = convert_date(audio['date'][0]),
-                type = file_path.suffix,
+                extension = file_path.suffix,
                 guid = audio['catalognumber'][0]
             )
         except:
@@ -139,7 +137,7 @@ class Episode:
 
     def _filename(self) -> str:
         by = self.author if self.album == self.author or not self.album else F"{self.author} - {self.album}"
-        return sanitise_path(F"{self.date} - {self.title} - {by}{self.type}")
+        return sanitise_path(F"{self.date} - {self.title} - {by}{self.extension}")
 
     def __eq__(self, other):
         if not other:
@@ -152,7 +150,7 @@ class Episode:
         self.author == other.author and
         self.album == other.album and
         self.date == other.date and
-        self.type == other.type and
+        self.extension == other.extension and
         self.guid == other.guid
         )
 

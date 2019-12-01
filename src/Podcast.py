@@ -46,6 +46,8 @@ class Podcast:
             episode_number -= 1
             if episode:
                 yield episode
+            else:
+                logging.warning(F"Something was wrong with {author} - {album} - {episode_blob['title']}")
             continue
 
     def _get_manifest(self) -> Dict:

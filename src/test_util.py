@@ -72,6 +72,10 @@ class TestUtil(unittest.TestCase):
          u"Lisa   Randall:\t\tDark Matter,\tDinosaurs   , and Extra Dimensions",
          "Lisa Randall: Dark Matter, Dinosaurs, and Extra Dimensions"
         ],
+        ["fail well",
+         u"\u00F7",
+         None
+        ],
         ["ignore ok",
          "".join(ok_unicode),
          "".join(ok_unicode)
