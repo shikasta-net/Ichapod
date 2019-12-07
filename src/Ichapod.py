@@ -5,6 +5,7 @@ import datetime
 import logging, logging.config
 import mimetypes
 from pathlib import Path
+import traceback
 from typing import Iterator
 
 from Episode import Episode
@@ -61,50 +62,53 @@ def move(downloaded_file: Path, podcast_file: Path, over_write=False) -> bool :
 
 
 if __name__ == "__main__":
+    try :
+        actual_run = not args.dry_run
 
-    actual_run = not args.dry_run
+        logging.getLogger().setLevel(logging.INFO)
+        logging.info(F"Starting update {datetime.datetime.now().replace(microsecond=0)}\n{'-'*43}")
+        if not actual_run :
+            logging.info("Performing dry-run")
+        logging.info("Updating podcasts from list")
+        if args.over_write :
+            logging.warning("OVERWRITE IS ENABLED")
+        logging.getLogger().setLevel(log_level)
 
-    logging.getLogger().setLevel(logging.INFO)
-    logging.info(F"Starting update {datetime.datetime.now().replace(microsecond=0)}\n{'-'*43}")
-    if not actual_run :
-        logging.info("Performing dry-run")
-    logging.info("Updating podcasts from list")
-    if args.over_write :
-        logging.warning("OVERWRITE IS ENABLED")
-    logging.getLogger().setLevel(log_level)
+        temp_download_location = args.temp_download_location
+        temp_download_location.mkdir(parents=True, exist_ok=True)
 
-    temp_download_location = args.temp_download_location
-    temp_download_location.mkdir(parents=True, exist_ok=True)
+        podcast_store_location = args.destination_folder
 
-    podcast_store_location = args.destination_folder
+        record = Record(podcast_store_location / '.download_record')
 
-    record = Record(podcast_store_location / '.download_record')
+        for podcast in podcast_list(args.podcast_list):
+            for episode in podcast.episodes():
+                #skip already downloaded
+                podcast_file = podcast_store_location / str(podcast) / str(episode)
+                if record.check(episode):
+                    logging.info(F"Skipping {episode}")
+                    continue
+                if podcast_file.exists() and episode == Episode.load(podcast_file):
+                    logging.info(F"Skipping already downloaded {episode}")
+                    record.store(episode)
+                    continue
+                #if not episode exists
+                downloaded_file = episode.download_to(temp_download_location)
+                if actual_run and downloaded_file and move(downloaded_file, podcast_file, args.over_write):
+                    logging.info(F"Fetch completed for {podcast_file.relative_to(podcast_store_location)}")
+                    #store result to avoid repetition
+                    record.store(episode)
+                elif downloaded_file:
+                    downloaded_file.unlink()
+                    logging.info(F"Dry-run fetch completed for {podcast_file.relative_to(podcast_store_location)}")
+                else:
+                    logging.error(F"Episode {episode} not downloaded")
 
-    for podcast in podcast_list(args.podcast_list):
-        for episode in podcast.episodes():
-            #skip already downloaded
-            podcast_file = podcast_store_location / str(podcast) / str(episode)
-            if record.check(episode):
-                logging.info(F"Skipping {episode}")
-                continue
-            if podcast_file.exists() and episode == Episode.load(podcast_file):
-                logging.info(F"Skipping already downloaded {episode}")
-                record.store(episode)
-                continue
-            #if not episode exists
-            downloaded_file = episode.download_to(temp_download_location)
-            if actual_run and downloaded_file and move(downloaded_file, podcast_file, args.over_write):
-                logging.info(F"Fetch completed for {podcast_file.relative_to(podcast_store_location)}")
-                #store result to avoid repetition
-            elif downloaded_file:
-                downloaded_file.unlink()
-                logging.info(F"Dry-run fetch completed for {podcast_file.relative_to(podcast_store_location)}")
-            else:
-                logging.error(F"Episode {episode} not downloaded")
-
-    if actual_run:
-        record.sort()
-        logging.info(F"Download record updated")
+        if actual_run:
+            record.sort()
+            logging.info(F"Download record updated")
+    except:
+        logging.error(F"Faital error ({traceback.format_exc()})")
 
     logging.getLogger().setLevel(logging.INFO)
     logging.info(F"Done updating\n{'='*43}")
