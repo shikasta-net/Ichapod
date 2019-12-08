@@ -121,3 +121,32 @@ class TestUtil(unittest.TestCase):
     ])
     def test_sanitise_path(self, name:str, input: str, expected: str):
         self.assertEqual(sanitise_path(input), expected)
+
+    @parameterized.expand([
+        ["Prefix bob left",
+         (['adam', 'bob', 'bob', 'bob', 'bobby', 'bobert', 'chris'], string_prefix_comparator_left('bob')),
+         1,
+        ],
+        ["Prefix bob right",
+         (['adam', 'bob', 'bob', 'bob', 'bobby', 'bobert', 'chris'], string_prefix_comparator_right('bob')),
+         6,
+        ],
+        ["Prefix bobby right",
+         (['adam', 'bob', 'bob', 'bob', 'bobby', 'bobert', 'chris'], string_prefix_comparator_right('bobby')),
+         5,
+        ],
+        ["Prefix james left",
+         (['adam', 'bob', 'bob', 'bob', 'bobby', 'bobert', 'chris'], string_prefix_comparator_left('james')),
+         7,
+        ],
+        ["Simple date left",
+         (['2019-12-05-0118','2019-12-05-0500','2019-12-05-0900','2019-12-05-1000','2019-12-05-1200','2019-12-05-1745','2019-12-05-1746','2019-12-05-2325','2019-12-06-0010','2019-12-06-1320'], string_prefix_comparator_left('2019-12-05-1520')),
+         5,
+        ],
+        ["Compound prefix date left",
+         (['BBC	Home Front	2016-09-27-1115 17	27 September 1916: Juliet Cavendish	urn:bbc:podcast:b07kt27l	.mp3	http://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/http/vpid/p0443j5w.mp3','BBC	Home Front	2016-09-28-1115 18	28 September 1916: Ivy Layton	urn:bbc:podcast:b07kt27t	.mp3	http://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/http/vpid/p0443jsp.mp3','BBC	Home Front	2016-09-29-1115 19	29 September 1916: Isabel Graham	urn:bbc:podcast:b07kt289	.mp3	http://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/http/vpid/p0443kxp.mp3','BBC	Home Front	2016-09-30-1115 20	30 September 1916: Kitty Lumley urn:bbc:podcast:b07kt28n	.mp3	http://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/http/vpid/p0443lqp.mp3','BBC	Home Front	2016-12-12-1215 21	12 December 1916: Geoffrey Marshall (Season 9 start)	urn:bbc:podcast:b083l9p5	.mp3	http://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/http/vpid/p04g8rtc.mp3','BBC	Home Front	2016-12-13-1215 22	13 December 1916: Marion Wardle urn:bbc:podcast:b083lb2k	.mp3	http://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/http/vpid/p04g8thx.mp3','BBC	Home Front	2016-12-14-1215 23	14 December 1916: Lester Reed	urn:bbc:podcast:b083lbby	.mp3	http://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/http/vpid/p04g8ygw.mp3','BBC	Home Front	2016-12-15-1215 24	15 December 1916: Martha Lamb	urn:bbc:podcast:b083lbc3	.mp3	http://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/http/vpid/p04g91j0.mp3','BBC	Home Front	2016-12-16-1215 25	16 December 1916: Edgar Bates	urn:bbc:podcast:b083lbj0	.mp3	http://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/http/vpid/p04g93v1.mp3','BBC	Home Front	2016-12-19-1215 26	19 December 1916: Alan Lowther	urn:bbc:podcast:b083lbz6	.mp3	http://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/http/vpid/p04g99bc.mp3','BBC	Home Front	2016-12-20-1215 27	20 December 1916: Adeline Lumley	urn:bbc:podcast:b083lbzc	.mp3	http://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/http/vpid/p04gbd4f.mp3','BBC	Home Front	2016-12-21-1215 28	21 December 1916: Marion Wardle urn:bbc:podcast:b083lbzk	.mp3	http://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/http/vpid/p04gb7rg.mp3'], string_prefix_comparator_left('BBC	Home Front	2016-09-30-1115')),
+         3,
+        ],
+    ])
+    def test_bisect(self, name: str, input: Tuple, expected: int):
+        self.assertEqual(GenericBisect.bisect(*input), expected)

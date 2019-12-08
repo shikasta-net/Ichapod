@@ -95,3 +95,42 @@ def sanitise_path(string: str) -> str:
 
 def squelch_whitespace(string: str) -> str:
     return re.sub(r'\s*(?P<chr>[ ,])', r'\g<chr>', string)
+
+
+class GenericBisect:
+    """
+    Solving the problem that bisect library doesn't support 'key', by Shnatsel - https://stackoverflow.com/questions/7380629/perform-a-binary-search-for-a-string-prefix-in-python
+    """
+
+    LOWER, HIGHER, STOP = range(3)
+
+    def bisect(arr, comparator, lo=0, hi=None):
+        if lo < 0:
+            raise ValueError('lo must be non-negative')
+        if hi is None:
+            hi = len(arr)
+        while lo < hi:
+            mid = (lo+hi)//2
+            if comparator(arr, mid) == GenericBisect.STOP:
+                return mid
+            elif comparator(arr, mid) == GenericBisect.HIGHER:
+                lo = mid+1
+            else:
+                hi = mid
+        return lo
+
+def string_prefix_comparator_right(prefix):
+    def parametrized_string_prefix_comparator_right(array, mid):
+        if array[mid][0:len(prefix)] <= prefix:
+            return GenericBisect.HIGHER
+        else:
+            return GenericBisect.LOWER
+    return parametrized_string_prefix_comparator_right
+
+def string_prefix_comparator_left(prefix):
+    def parametrized_string_prefix_comparator_left(array, mid):
+        if array[mid][0:len(prefix)] < prefix: # < is the only diff. from right
+            return GenericBisect.HIGHER
+        else:
+            return GenericBisect.LOWER
+    return parametrized_string_prefix_comparator_left
