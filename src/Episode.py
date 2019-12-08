@@ -93,6 +93,34 @@ class Episode:
 
         return podcast_file if podcast_file.exists() else None
 
+    def serialise(self):
+        return "\t".join([
+            self.author,
+            self.album,
+            self.date,
+            str(self.number),
+            self.title,
+            self.guid,
+            self.extension,
+            self.url,
+        ])
+
+    def lookup(self, record: list) -> bool:
+        prefix = "\t".join([
+            self.author,
+            self.album,
+            self.date,
+            ])
+        left_result = string_prefix_comparator_left(prefix)
+        right_result = string_prefix_comparator_right(prefix)
+        possible_matches = record[GenericBisect.bisect(record,left_result):GenericBisect.bisect(record,right_result)]
+        for match in possible_matches:
+            tok = match.split('\t')
+            other = Episode(author=tok[0], album=tok[1], date=tok[2], number=tok[3], title=tok[4], guid=tok[5], extension=tok[6], url=tok[7])
+            if other == self:
+                return True
+        return False
+
     @classmethod
     def _guess_extension(cls, mimetype: str, url: str) -> str:
         extensions =  mimetypes.guess_all_extensions(mimetype)

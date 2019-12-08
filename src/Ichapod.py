@@ -9,6 +9,7 @@ from typing import Iterator
 
 from Episode import Episode
 from Podcast import Podcast
+from Record import Record
 
 parser = argparse.ArgumentParser(description='Download podcasts.')
 parser.add_argument('podcast_list', type=Path, help='Podcast list')
@@ -77,12 +78,18 @@ if __name__ == "__main__":
 
     podcast_store_location = args.destination_folder
 
+    record = Record(podcast_store_location / '.download_record')
+
     for podcast in podcast_list(args.podcast_list):
         for episode in podcast.episodes():
             #skip already downloaded
             podcast_file = podcast_store_location / str(podcast) / str(episode)
+            if record.check(episode):
+                logging.info(F"Skipping {episode}")
+                continue
             if podcast_file.exists() and episode == Episode.load(podcast_file):
                 logging.info(F"Skipping already downloaded {episode}")
+                record.store(episode)
                 continue
             #if not episode exists
             downloaded_file = episode.download_to(temp_download_location)
@@ -95,6 +102,9 @@ if __name__ == "__main__":
             else:
                 logging.error(F"Episode {episode} not downloaded")
 
+    if actual_run:
+        record.sort()
+        logging.info(F"Download record updated")
 
     logging.getLogger().setLevel(logging.INFO)
     logging.info(F"Done updating\n{'='*43}")
