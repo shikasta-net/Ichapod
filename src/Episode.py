@@ -4,6 +4,9 @@ import logging
 import mimetypes
 import mutagen
 from mutagen import easymp4
+from mutagen.id3 import APIC, PictureType, Encoding
+from mutagen.mp3 import MP3
+from mutagen.mp4 import MP4, MP4Cover
 from pathlib import Path
 import r128gain
 import shutil
@@ -22,7 +25,7 @@ mutagen.easymp4.EasyMP4Tags.RegisterTextKey('website','purl')
 
 class Episode:
 
-    def __init__(self, url: str, number: int, title: str, author: str, album: str, date: str, extension: str, guid: str):
+    def __init__(self, url: str, number: int, title: str, author: str, album: str, date: str, extension: str, guid: str, cover_image: 'Image'=None):
         self.url = url
         self.number = int(number)
         self.title = title
@@ -31,9 +34,10 @@ class Episode:
         self.date = date
         self.extension = extension
         self.guid = guid
+        self.cover_image = cover_image
 
     @classmethod
-    def create(cls, episode_number: int, author: str, album: str, episode: dict) -> 'Episode':
+    def create(cls, episode_number: int, author: str, album: str, episode: dict, cover_image: 'Image') -> 'Episode':
         try:
             url = episode['enclosure']['@url']
             if not url:
@@ -50,7 +54,7 @@ class Episode:
             extension = cls._guess_extension(episode['enclosure']['@type'], url)
 
             if guid and episode_number and title and author and album and date and url and extension :
-                return cls(url, episode_number, title, author, album, date, extension, guid)
+                return cls(url, episode_number, title, author, album, date, extension, guid, cover_image)
         except KeyError as e:
             logging.warning(F"Unable to find key {e} while creating Episode {episode_number} - {author} - {album}")
 
@@ -84,6 +88,7 @@ class Episode:
 
         self._download(self.url, to=podcast_file)
         self._tag_episode(podcast_file)
+        self._add_cover_image(self.cover_image, podcast_file)
         self._replay_gain(podcast_file)
 
         return podcast_file if podcast_file.exists() else None
@@ -122,6 +127,31 @@ class Episode:
             if error > 0 :
                 raise Exception(F"Unable to process gain on {podcast_file}")
 
+    @staticmethod
+    def _add_cover_image(cover_image: 'Image', podcast_file: Path) :
+        if podcast_file.exists() and cover_image :
+            metadata = mutagen.File(str(podcast_file), easy=False)
+            if type(metadata) == MP3 and not metadata.tags.getall('APIC'):
+                logging.info(F"Adding image tag")
+                metadata.tags.add(
+                    APIC(
+                        data=cover_image.data,
+                        mime=cover_image.type,
+                        encoding=Encoding.UTF8,
+                        type=PictureType.COVER_FRONT
+                    )
+                )
+                metadata.save()
+            elif type(metadata) == MP4 and not metadata.tags.get('covr'):
+                logging.info(F"Adding image tag to MP4")
+                imageformat = MP4Cover.FORMAT_PNG if mimetypes.guess_extension(cover_image.type) == '.png' else MP4Cover.FORMAT_JPEG
+                metadata['covr'] = [ MP4Cover(cover_image.data, imageformat=imageformat)]
+                metadata.save()
+            elif type(metadata) not in [MP3, MP4] :
+                raise TypeError(F"Unkown type {type(metadata)} tagging {str(self)}")
+            else :
+                logging.info(F"{podcast_file} already has an image")
+
     def _tag_episode(self, podcast_file: Path) :
         if podcast_file.exists() :
             metadata = mutagen.File(str(podcast_file), easy=True)
@@ -159,3 +189,8 @@ class Episode:
 
     def __str__(self):
         return self._filename()
+
+class Image:
+    def __init__(self, data, type):
+        self.data = data
+        self.type = type

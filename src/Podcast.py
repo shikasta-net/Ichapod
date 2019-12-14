@@ -32,9 +32,10 @@ class Podcast:
 
     def episodes(self) -> Iterator['Episode']:
         manifest = self._get_manifest()
-        return self._episodes(manifest)
+        cover_image = self._download_cover(manifest)
+        return self._episodes(manifest, cover_image)
 
-    def _episodes(self, manifest: dict) -> Iterator['Episode']:
+    def _episodes(self, manifest: dict, cover_image: Image) -> Iterator['Episode']:
         author: str = self.author if self.author else dict['rss']['channel']['title']
         album: str = self.series if self.series else author
 
@@ -42,13 +43,27 @@ class Podcast:
 
         episode_number = len(episodes)
         for episode_blob in episodes :
-            episode = Episode.create(episode_number, author, album, episode_blob)
+            episode = Episode.create(episode_number, author, album, episode_blob, cover_image)
             episode_number -= 1
             if episode:
                 yield episode
             else:
                 logging.warning(F"Something was wrong with {author} - {album} - {episode_blob['title']}")
             continue
+
+    def _download_cover(self, manifest: dict) -> Image:
+        try:
+            image_url = manifest['rss']['channel']['image']['url']
+
+            with urllib3.PoolManager() as http:
+                response = http.request('GET', image_url, preload_content=False)
+                image_data: bytes = response.data
+                image_type: str = response.headers['Content-Type']
+            return Image(data=image_data, type=image_type)
+        except:
+            logging.warning(F"Failed to retrieve cover image for {str(self)}")
+            logging.debug(traceback.format_exc())
+        return None
 
     def _get_manifest(self) -> Dict:
         with urllib3.PoolManager() as http:
