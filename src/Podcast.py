@@ -63,6 +63,7 @@ class Podcast:
         except:
             logging.warning(F"Failed to retrieve cover image for {str(self)}")
             logging.debug(traceback.format_exc())
+            set_error(1)
         return None
 
     def _get_manifest(self) -> Dict:
@@ -73,6 +74,7 @@ class Podcast:
             except:
                 logging.error(F"Failed to parse xml from {url}")
                 logging.debug(traceback.format_exc())
+                set_error(1)
 
         return data
 

@@ -79,6 +79,7 @@ class Episode:
         except:
             logging.error(F"Failed to load file {file_path}")
             logging.debug(traceback.format_exc())
+            set_error(1)
         return None
 
     def download_to(self, base_path: Path) -> Path:
@@ -145,6 +146,7 @@ class Episode:
             except:
                 logging.error(F"Failed to download {url} to {to}")
                 logging.debug(traceback.format_exc())
+                set_error(1)
 
     @staticmethod
     def _replay_gain(podcast_file: Path) :

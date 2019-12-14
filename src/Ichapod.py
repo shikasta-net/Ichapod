@@ -5,12 +5,14 @@ import datetime
 import logging, logging.config
 import mimetypes
 from pathlib import Path
+import sys
 import traceback
 from typing import Iterator
 
 from Episode import Episode
 from Podcast import Podcast
 from Record import Record
+from util import set_error, get_error
 
 parser = argparse.ArgumentParser(description='Download podcasts.')
 parser.add_argument('podcast_list', type=Path, help='Podcast list')
@@ -49,6 +51,7 @@ def move(downloaded_file: Path, podcast_file: Path, over_write=False) -> bool :
         podcast_file.unlink()
     if podcast_file.exists():
         logging.error(F"{podcast_file} already exists")
+        set_error(1)
         return False
     try:
         with podcast_file.open(mode='xb') as output:
@@ -109,6 +112,9 @@ if __name__ == "__main__":
             logging.info(F"Download record updated")
     except:
         logging.error(F"Faital error ({traceback.format_exc()})")
+        set_error(1)
 
     logging.getLogger().setLevel(logging.INFO)
     logging.info(F"Done updating\n{'='*43}")
+
+    sys.exit(get_error())
