@@ -52,6 +52,31 @@ class TestUtil(unittest.TestCase):
         self.assertEqual(convert_date(input), expected)
 
     @parameterized.expand([
+        ["2019-12-23-1200",
+         "2019-12-23-1200",
+         "7052",
+        ],
+        ["2019-10-21-1100",
+         "2019-10-21-1100",
+         "6989",
+        ],
+        ["2019-12-13-1200",
+         "2019-12-13-1200",
+         "7042",
+        ],
+        ["2016-04-12-0600",
+         "2016-04-12-0600",
+         "5702",
+        ],
+        ["2020-05-16-2000",
+         "2020-05-16-2000",
+         "7197",
+        ],
+    ])
+    def test_tracknumber_from_date(self, name:str, input: str, expected: str):
+        self.assertEqual(tracknumber_from_date(input), expected)
+
+    @parameterized.expand([
         ["Standard",
          u"ti\u2013tle",
          "ti-tle",

@@ -41,10 +41,8 @@ class Podcast:
 
         episodes: List(dict) = manifest['rss']['channel']['item']
 
-        episode_number = len(episodes)
         for episode_blob in episodes :
-            episode = Episode.create(episode_number, author, album, episode_blob, cover_image)
-            episode_number -= 1
+            episode = Episode.create(author, album, episode_blob, cover_image)
             if episode:
                 yield episode
             else:

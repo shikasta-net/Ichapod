@@ -75,6 +75,10 @@ def convert_date(date: str) -> str:
     output = "%Y-%m-%d-%H%M"
     return parser.parse(date, tzinfos=__tzinfos).strftime(output)
 
+def tracknumber_from_date(date: str) -> str:
+    epoch = parser.parse('2000-09-01') # Start of podcast history
+    return str((parser.parse(date) - epoch).days)
+
 def remove_unicode(string: str) -> str :
     clean = string.translate(__unicode_map)
     clean = squelch_whitespace(clean)

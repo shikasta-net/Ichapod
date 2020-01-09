@@ -37,13 +37,13 @@ class Episode:
         self.cover_image = cover_image
 
     @classmethod
-    def create(cls, episode_number: int, author: str, album: str, episode: dict, cover_image: 'Image') -> 'Episode':
+    def create(cls, author: str, album: str, episode: dict, cover_image: 'Image') -> 'Episode':
         try:
             url = episode['enclosure']['@url']
             if not url:
                 return None
 
-            logging.debug(F"Creating episode from { dict({ part:episode[part] for part in ['enclosure', 'title', 'pubDate', 'guid'] }, **{'number':episode_number, 'author':author, 'album': album}) }")
+            logging.debug(F"Creating episode from { dict({ part:episode[part] for part in ['enclosure', 'title', 'pubDate', 'guid'] }, **{'author':author, 'album': album}) }")
 
             guid = episode['guid']['#text'] if type(episode['guid']) == collections.OrderedDict else episode['guid']
 
@@ -51,12 +51,13 @@ class Episode:
             author = remove_unicode(author)
             album = remove_unicode(album)
             date = convert_date(episode['pubDate'])
+            episode_number = tracknumber_from_date(date)
             extension = cls._guess_extension(episode['enclosure']['@type'], url)
 
             if guid and episode_number and title and author and album and date and url and extension :
                 return cls(url, episode_number, title, author, album, date, extension, guid, cover_image)
         except KeyError as e:
-            logging.warning(F"Unable to find key {e} while creating Episode {episode_number} - {author} - {album}")
+            logging.warning(F"Unable to find key {e} while creating Episode of {author} - {album}")
 
         return None
 
