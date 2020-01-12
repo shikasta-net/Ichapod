@@ -142,7 +142,7 @@ class Episode:
 
         with urllib3.PoolManager() as http:
             try:
-                with http.request('GET', url, preload_content=False) as response, open(to, 'wb') as out_file:
+                with http.request('GET', url, preload_content=False, retries=10) as response, open(to, 'wb') as out_file:
                     shutil.copyfileobj(response, out_file)
             except:
                 logging.error(F"Failed to download {url} to {to}")
