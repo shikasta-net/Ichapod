@@ -39,6 +39,9 @@ class Episode:
     @classmethod
     def create(cls, author: str, album: str, episode: dict, cover_image: 'Image') -> 'Episode':
         try:
+            if not 'enclosure' in episode:
+                logging.info(F"Entry {author} - {album} - {episode['title']} is not an episode.")
+                return Blank()
             url = episode['enclosure']['@url']
             if not url:
                 return None
@@ -219,6 +222,10 @@ class Episode:
 
     def __str__(self):
         return self._filename()
+
+class Blank(Episode):
+    def __init__(self):
+        super(Blank, self).__init__(None,-1,None,None,None,None,None,None,None)
 
 class Image:
     def __init__(self, data, type):

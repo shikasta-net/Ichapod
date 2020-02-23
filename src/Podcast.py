@@ -5,7 +5,7 @@ from typing import Dict, Iterator, List
 import urllib3
 import xmltodict
 
-from Episode import Episode, Image
+from Episode import Episode, Image, Blank
 from util import *
 
 class Podcast:
@@ -43,9 +43,9 @@ class Podcast:
 
         for episode_blob in episodes :
             episode = Episode.create(author, album, episode_blob, cover_image)
-            if episode:
+            if episode and not isinstance(episode, Blank):
                 yield episode
-            else:
+            elif not episode:
                 logging.warning(F"Something was wrong with {author} - {album} - {episode_blob['title']}")
             continue
 
