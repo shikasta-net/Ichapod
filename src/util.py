@@ -10,6 +10,7 @@ ERROR: int = 0
 __unicode_map = {
     ord(u'\xa0'):' ',
     ord(u'\u0009'):' ',
+    ord(u'\u200b'):'',
     ord(u'\u2013'):'-',
     ord(u'\u2014'):'-',
     ord(u'\u2018'):'\'',
