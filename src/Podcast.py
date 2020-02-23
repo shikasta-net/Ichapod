@@ -50,18 +50,19 @@ class Podcast:
             continue
 
     def _download_cover(self, manifest: dict) -> Image:
-        try:
-            image_url = manifest['rss']['channel']['image']['url']
+        if 'image' in manifest['rss']['channel']:
+            try:
+                image_url = manifest['rss']['channel']['image']['url']
 
-            with urllib3.PoolManager() as http:
-                response = http.request('GET', image_url, preload_content=False)
-                image_data: bytes = response.data
-                image_type: str = response.headers['Content-Type']
-            return Image(data=image_data, type=image_type)
-        except:
-            logging.warning(F"Failed to retrieve cover image for {str(self)}")
-            logging.debug(traceback.format_exc())
-            set_error(1)
+                with urllib3.PoolManager() as http:
+                    response = http.request('GET', image_url, preload_content=False)
+                    image_data: bytes = response.data
+                    image_type: str = response.headers['Content-Type']
+                return Image(data=image_data, type=image_type)
+            except:
+                logging.warning(F"Failed to retrieve cover image for {str(self)}")
+                logging.debug(traceback.format_exc())
+                set_error(1)
         return None
 
     def _get_manifest(self) -> Dict:
