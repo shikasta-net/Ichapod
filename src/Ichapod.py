@@ -111,7 +111,7 @@ if __name__ == "__main__":
             record.sort()
             logging.info(F"Download record updated")
     except:
-        logging.error(F"Faital error ({traceback.format_exc()})")
+        logging.error(F"Faital error with {episode or podcast or 'no info'} ({traceback.format_exc()})")
         set_error(1)
 
     logging.getLogger().setLevel(logging.INFO)
