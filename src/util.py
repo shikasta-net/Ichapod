@@ -23,6 +23,7 @@ __unicode_map = {
 __ok_unicode = [
     u'\xc1',
     u'\xd3',
+    u'\xd6',
     u'\xe1',
     u'\xe2',
     u'\xe4',
@@ -30,6 +31,7 @@ __ok_unicode = [
     u'\xeb',
     u'\xed',
     u'\xf1',
+    u'\xf3',
     u'\xf8',
     u'\xfc',
     u'\u0160',
