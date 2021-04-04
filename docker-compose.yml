@@ -2,7 +2,7 @@ version: '3'
 
 services:
   ichapod:
-    image: shikasta/ichapod:2.4
+    image: shikasta/ichapod:2.5
     build: .
     volumes:
       - "./podcasts.txt:/var/lib/ichapod/podcasts.txt"

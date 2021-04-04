@@ -91,7 +91,7 @@ if __name__ == "__main__":
                 if record.check(episode):
                     logging.info(F"Skipping {episode}")
                     continue
-                if podcast_file.exists() and episode == Episode.load(podcast_file):
+                if not args.over_write and podcast_file.exists() and episode == Episode.load(podcast_file):
                     logging.info(F"Skipping already downloaded {episode}")
                     record.store(episode)
                     continue
