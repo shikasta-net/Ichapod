@@ -42,9 +42,12 @@ class Episode:
             if not 'enclosure' in episode:
                 logging.info(F"Entry {author} - {album} - {episode['title']} is not an episode.")
                 return Blank()
-            url = episode['enclosure']['@url']
-            if not url:
+            enclosure = episode['enclosure']
+            if type(enclosure) is list:
+                enclosure = next(filter(Episode._check_enclosure_url, episode['enclosure']), None)
+            if not enclosure or'@url' not in enclosure or not enclosure['@url']:
                 return None
+            url = enclosure['@url']
 
             logging.debug(F"Creating episode from { dict({ part:episode[part] for part in ['enclosure', 'title', 'pubDate', 'guid'] }, **{'author':author, 'album': album}) }")
 
@@ -55,7 +58,7 @@ class Episode:
             album = remove_unicode(album)
             date = convert_date(episode['pubDate'])
             episode_number = tracknumber_from_date(date)
-            extension = cls._guess_extension(episode['enclosure']['@type'], url)
+            extension = cls._guess_extension(enclosure['@type'], url)
 
             if guid and episode_number and title and author and album and date and url and extension :
                 return cls(url, episode_number, title, author, album, date, extension, guid, cover_image)
@@ -138,6 +141,18 @@ class Episode:
             return matches[0]
 
         return extensions[0]
+
+    @staticmethod
+    def _check_enclosure_url(enclosure: dict) -> bool :
+        if '@url' in enclosure:
+            with urllib3.PoolManager() as http:
+                with http.request('GET', enclosure['@url'], preload_content=False) as response:
+                    status = response.status
+                    response.release_conn()
+                    if status < 400:
+                        return True
+
+        return False
 
     @staticmethod
     def _download(url: str, to: Path) :
