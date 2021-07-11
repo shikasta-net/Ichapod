@@ -45,6 +45,7 @@ __valid_path_map = {
     ord(':'):', ',
     ord('/'):', ',
     ord('?'):None,
+    ord('"'):'\'',
 }
 
 __tzinfos = {
