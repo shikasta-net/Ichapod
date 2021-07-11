@@ -166,6 +166,8 @@ class Episode:
                 logging.error(F"Failed to download {url} to {to}")
                 logging.debug(traceback.format_exc())
                 set_error(1)
+            finally:
+                response.release_conn()
 
     @staticmethod
     def _replay_gain(podcast_file: Path) :
