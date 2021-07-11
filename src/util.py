@@ -30,6 +30,7 @@ __ok_unicode = [
     u'\xe9',
     u'\xeb',
     u'\xed',
+    u'\xf0',
     u'\xf1',
     u'\xf3',
     u'\xf8',
