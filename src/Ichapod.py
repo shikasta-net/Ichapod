@@ -106,6 +106,7 @@ if __name__ == "__main__":
                     logging.info(F"Dry-run fetch completed for {podcast_file.relative_to(podcast_store_location)}")
                 else:
                     logging.error(F"Episode {episode} not downloaded")
+            episode = None
 
         if actual_run:
             record.sort()
