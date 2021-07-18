@@ -71,7 +71,7 @@ class Podcast:
             try:
                 data: dict = xmltodict.parse(response.data)
             except:
-                logging.error(F"Failed to parse xml from {url}")
+                logging.error(F"Failed to parse xml from {self.url}")
                 logging.debug(traceback.format_exc())
                 set_error(1)
 
