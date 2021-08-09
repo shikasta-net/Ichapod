@@ -93,13 +93,18 @@ class Episode:
         podcast_file = base_path / str(self)
 
         logging.info(F"Downloading {podcast_file.name}")
-
-        self._download(self.url, to=podcast_file)
-        self._tag_episode(podcast_file)
-        self._add_cover_image(self.cover_image, podcast_file)
-        self._replay_gain(podcast_file)
-
-        return podcast_file if podcast_file.exists() else None
+        try :
+            self._download(self.url, to=podcast_file)
+            self._tag_episode(podcast_file)
+            self._add_cover_image(self.cover_image, podcast_file)
+            self._replay_gain(podcast_file)
+        except Exception as e:
+            logging.error(F"Failed to get episode {str(self)}: {str(e)}")
+            logging.debug(traceback.format_exc())
+            podcast_file = None
+            set_error(1)
+        finally :
+            return podcast_file if podcast_file and podcast_file.exists() else None
 
     def serialise(self):
         return "\t".join([
