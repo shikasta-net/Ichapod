@@ -95,6 +95,10 @@ if __name__ == "__main__":
                     logging.info(F"Skipping already downloaded {episode}")
                     record.store(episode)
                     continue
+                if not args.over_write and podcast_file.exists() and not episode == Episode.load(podcast_file):
+                    logging.error(F"File exists for {episode} but does not match {Episode.load(podcast_file)}; not overwiting: not recording")
+                    set_error(1)
+                    continue
                 #if not episode exists
                 downloaded_file = episode.download_to(temp_download_location)
                 if actual_run and downloaded_file and move(downloaded_file, podcast_file, args.over_write):
