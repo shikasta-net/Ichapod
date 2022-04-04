@@ -47,7 +47,6 @@ class Podcast:
                 yield episode
             elif not episode:
                 logging.warning(F"Something was wrong with {author} - {album} - {episode_blob['title']}")
-            continue
 
     def _download_cover(self, manifest: dict) -> Image:
         if 'image' in manifest['rss']['channel']:
