@@ -69,12 +69,12 @@ class Podcast:
             response = http.request('GET', self.url, preload_content=False)
             try:
                 data: dict = xmltodict.parse(response.data)
+                return data
             except:
                 logging.error(F"Failed to parse xml from {self.url}")
                 logging.debug(traceback.format_exc())
                 set_error(1)
-
-        return data
+        return {}
 
     def _folder(self):
         if self.series and self.series != self.author:
