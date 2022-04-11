@@ -65,7 +65,9 @@ class Podcast:
         return None
 
     def _get_manifest(self) -> Dict:
-        with urllib3.PoolManager() as http:
+        with urllib3.PoolManager(
+            headers={'user-agent': 'Mozilla/5.0 (Windows NT 6.3; rv:36.0) ..'}
+        ) as http:
             response = http.request('GET', self.url, preload_content=False)
             try:
                 data: dict = xmltodict.parse(response.data)
