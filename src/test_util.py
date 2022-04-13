@@ -137,11 +137,11 @@ class TestUtil(unittest.TestCase):
         ],
         ["Unicode",
          u"2019-10\u201321-1100 - title - author\u2019s - \u201calbum\u201d.mp4",
-         "2019-10-21-1100 - title - author's - \"album\".mp4",
+         "2019-10-21-1100 - title - author's - \'album\'.mp4",
         ],
         ["Illeglas",
-         "2019-10-21-1100 - title? - authors: a / b , c - album: album,   the.mp4",
-         "2019-10-21-1100 - title - authors, a, b, c - album, album, the.mp4",
+         "2019-10-21-1100 - title? | series - authors: a / b , c - album: album,   the.mp4",
+         "2019-10-21-1100 - title, series - authors, a, b, c - album, album, the.mp4",
         ],
     ])
     def test_sanitise_path(self, name:str, input: str, expected: str):

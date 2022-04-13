@@ -45,6 +45,7 @@ __ok_unicode = [
 __valid_path_map = {
     ord(':'):', ',
     ord('/'):', ',
+    ord('|'):',',
     ord('?'):None,
     ord('"'):'\'',
 }

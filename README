@@ -18,6 +18,10 @@ Download history is tracked in an ordered text file _.download_record_, but file
 
 This is largely incompatible with the previous versions, except for the podcast list: the download record, logs, and file naming and tagging have all been changed.  The script will attempt to load an episode file with matching name if found, but the difference in internal tagging will likely cause an error.  These will be marked in the download log as already existing and skipped in subsequent runs, or you can use the --over-write flag if you wish to replace the files with newer tagged versions.
 
+Testing
+-------
+Run `python3 -m unittest discover src`
+
 History
 -------
 Much as the original author, I wanted to be able to listen to podcasts my way, when and how I chose.  I adapted the original Ichapod by putting in Docker to keep it working, made it more configurable and able to handle unicode more reliably, but eventually this became too much hassle when episodes started having titles containing the magic strings being used to unpack and parse episode structure; so I rewrote the whole concept in python.
