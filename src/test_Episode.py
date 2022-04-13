@@ -6,7 +6,7 @@ from typing import Tuple
 import unittest
 from parameterized import parameterized
 
-from Episode import Episode
+from Episode import Episode, Blank
 
 logging.basicConfig(level=logging.FATAL)
 
@@ -35,7 +35,7 @@ class TestPodcast(unittest.TestCase):
         ["Error",
          (u"author\u2019s", u"\u201calbum\u201d", dict(title=u"ti\u2013tle",
          pubDate='Mon, 21 Oct 2019 11:00:00 +0000', guid='slkdfjinveosij',), None),
-         None,
+         Blank(),
         ],
     ])
     def test_create(self, name: str, input: Tuple[str, str, dict], expected: 'Episode'):
