@@ -79,3 +79,33 @@ class TestPodcast(unittest.TestCase):
     ])
     def test_filename(self, name:str, input: Episode, expected: str):
         self.assertEqual(Episode._filename(input), expected)
+
+    @parameterized.expand([
+        ["Standard",
+         Episode("http://yes.no.co.uk/file.mp3", "13", "title", "author's", "album", "2019-10-21-1100", ".mp4", "slkdfjinveosij"),
+         Episode("http://yes.no.co.uk/file.mp3", "13", "title", "author's", "album", "2019-10-21-1100", ".mp4", "slkdfjinveosij"),
+        ],
+        ["Leviathan",
+         Episode("https://traffic.libsyn.com/secure/leviathan/The_Leviathan_Chronicles_-_Chapter_24.mp3?dest-id=11727", "3451", "Showdown at Mount Chenglung Part I", "The Leviathan Chronicles", "The Leviathan Chronicles", "2010-02-12-0000", ".mp3", "http://traffic.libsyn.com/leviathan/The_Leviathan_Chronicles_Chapter_24.mp3"),
+         Episode("https://traffic.libsyn.com/secure/leviathan/The_Leviathan_Chronicles_-_Chapter_24.mp3?dest-id=11727", "3451", "The Showdown at Mount Chenglung, Part 1", "The Leviathan Chronicles", "The Leviathan Chronicles", "2010-02-12-0000", ".mp3", "http://traffic.libsyn.com/leviathan/The_Leviathan_Chronicles_Chapter_24.mp3"),
+        ],
+        ["Leviathan2",
+         Episode("https://traffic.libsyn.com/secure/leviathan/The_Leviathan_Chronicles_-_Chapter_25_Part_2.mp3?dest-id=11727", "3555", "Showdown at Mount Chenglung Part II (Second Half)", "The Leviathan Chronicles", "The Leviathan Chronicles", "2010-05-27-0100", ".mp3", "ebce41a847fbfb7df49d719b422a2183"),
+         Episode("https://traffic.libsyn.com/secure/leviathan/The_Leviathan_Chronicles_-_Chapter_25_Part_2.mp3?dest-id=11727", "3555", "The Showdown at Mount Chenglung, Part 2 (Second Half)", "The Leviathan Chronicles", "The Leviathan Chronicles", "2010-05-27-0100", ".mp3", "ebce41a847fbfb7df49d719b422a2183"),
+        ],
+    ])
+    def test_equality(self, name:str, episode1: Episode, episode2: Episode):
+        self.assertTrue(episode1 == episode2)
+
+    @parameterized.expand([
+        ["Standard",
+         Episode("http://yes.no.co.uk/file12.mp3", "155", "titlezz", "author's", "album", "2020-11-01-1100", ".mp4", "kdfkjsdflkjfskfjd"),
+         Episode("http://yes.no.co.uk/file.mp3", "13", "title", "author's", "album", "2019-10-21-1100", ".mp4", "slkdfjinveosij"),
+        ],
+        ["Leviathan",
+         Episode("https://traffic.libsyn.com/secure/leviathan/The_Leviathan_Chronicles_-_Chapter_24.mp3?dest-id=11727", "3451", "Showdown at Mount Chenglung Part I", "The Leviathan Chronicles", "The Leviathan Chronicles", "2010-02-12-0000", ".mp3", "http://traffic.libsyn.com/leviathan/The_Leviathan_Chronicles_Chapter_24.mp3"),
+         Episode("https://traffic.libsyn.com/secure/leviathan/The_Leviathan_Chronicles_-_Chapter_25_Part_2.mp3?dest-id=11727", "3555", "Showdown at Mount Chenglung Part II (Second Half)", "The Leviathan Chronicles", "The Leviathan Chronicles", "2010-05-27-0100", ".mp3", "ebce41a847fbfb7df49d719b422a2183"),
+        ],
+    ])
+    def test_inequality(self, name:str, episode1: Episode, episode2: Episode):
+        self.assertTrue(episode1 != episode2)

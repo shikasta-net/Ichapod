@@ -1,5 +1,6 @@
 
 import collections
+from fuzzywuzzy import fuzz
 import logging
 import mimetypes
 import mutagen
@@ -231,7 +232,7 @@ class Episode:
         logging.debug(F"Comparing to another file {(self.number, other.number, self.number == other.number)} and {(self.title, other.title, self.title == other.title)} and {(self.author, other.author, self.author == other.author)} and {(self.album, other.album, self.album == other.album)} and {(self.date, other.date, self.date == other.date)} and {(self.extension, other.extension, self.extension == other.extension)} and {(self.guid, other.guid, self.guid == other.guid)}")
         return (
         self.number == other.number and
-        self.title == other.title and
+        fuzz.ratio(str(self.title), str(other.title)) >= 90 and
         self.author == other.author and
         self.album == other.album and
         self.date == other.date and
