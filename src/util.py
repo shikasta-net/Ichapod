@@ -27,6 +27,7 @@ __ok_unicode = [
     u'\xe1',
     u'\xe2',
     u'\xe4',
+    u'\xe7',
     u'\xe9',
     u'\xeb',
     u'\xed',
@@ -40,6 +41,7 @@ __ok_unicode = [
     u'\u01a1',
     u'\u0301',
     u'\u1ea1',
+    u'\u2026',
 ]
 
 __valid_path_map = {
