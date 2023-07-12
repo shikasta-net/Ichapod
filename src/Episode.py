@@ -14,7 +14,7 @@ import shutil
 import traceback
 import urllib3
 
-from util import *
+from .util import *
 
 mimetypes.add_type('audio/mp3', '.mp3')
 mimetypes.add_type('audio/mpeg', '.mp3')

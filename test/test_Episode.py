@@ -6,7 +6,7 @@ from typing import Tuple
 import unittest
 from parameterized import parameterized
 
-from Episode import Episode, Blank
+from src.Episode import Episode, Blank
 
 logging.basicConfig(level=logging.FATAL)
 

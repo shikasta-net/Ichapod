@@ -5,8 +5,8 @@ from typing import Dict, Iterator, List
 import urllib3
 import xmltodict
 
-from Episode import Episode, Image, Blank
-from util import *
+from .Episode import Episode, Image, Blank
+from .util import *
 
 class Podcast:
 

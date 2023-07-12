@@ -20,7 +20,7 @@ This is largely incompatible with the previous versions, except for the podcast 
 
 Testing
 -------
-Run `python3 -m unittest discover src`
+Run `python3 -m unittest`
 
 History
 -------

@@ -9,10 +9,10 @@ import sys
 import traceback
 from typing import Iterator
 
-from Episode import Episode
-from Podcast import Podcast
-from Record import Record
-from util import set_error, get_error
+from .Episode import Episode
+from .Podcast import Podcast
+from .Record import Record
+from .util import set_error, get_error
 
 parser = argparse.ArgumentParser(description='Download podcasts.')
 parser.add_argument('podcast_list', type=Path, help='Podcast list')

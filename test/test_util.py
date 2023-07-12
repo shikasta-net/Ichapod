@@ -4,8 +4,8 @@ from typing import Tuple
 import unittest
 from parameterized import parameterized
 
-from util import *
-from util import __ok_unicode as ok_unicode
+from src.util import *
+from src.util import __ok_unicode as ok_unicode
 
 class TestUtil(unittest.TestCase):
 

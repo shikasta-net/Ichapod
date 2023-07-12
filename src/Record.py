@@ -2,7 +2,7 @@
 from pathlib import Path
 import logging
 
-from Episode import Episode
+from .Episode import Episode
 
 class Record:
 
