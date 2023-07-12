@@ -4,7 +4,7 @@ from typing import List
 import unittest
 from parameterized import parameterized
 
-from Podcast import Podcast
+from src.Podcast import Podcast
 
 class TestPodcast(unittest.TestCase):
 
