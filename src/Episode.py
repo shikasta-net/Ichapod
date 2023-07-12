@@ -151,7 +151,9 @@ class Episode:
     @staticmethod
     def _check_enclosure_url(enclosure: dict) -> bool :
         if '@url' in enclosure:
-            with urllib3.PoolManager() as http:
+            with urllib3.PoolManager(
+                headers={'user-agent': 'Mozilla/5.0 (Windows NT 6.3; rv:36.0) ..'}
+            ) as http:
                 with http.request('GET', enclosure['@url'], preload_content=False) as response:
                     status = response.status
                     response.release_conn()
@@ -164,7 +166,9 @@ class Episode:
     def _download(url: str, to: Path) :
         logging.debug(F"Downloading {url} to {to}")
 
-        with urllib3.PoolManager() as http:
+        with urllib3.PoolManager(
+            headers={'user-agent': 'Mozilla/5.0 (Windows NT 6.3; rv:36.0) ..'}
+        ) as http:
             try:
                 with http.request('GET', url, preload_content=False, retries=10) as response, open(to, 'wb') as out_file:
                     shutil.copyfileobj(response, out_file)

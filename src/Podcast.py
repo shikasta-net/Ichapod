@@ -53,7 +53,9 @@ class Podcast:
             try:
                 image_url = manifest['rss']['channel']['image']['url']
 
-                with urllib3.PoolManager() as http:
+                with urllib3.PoolManager(
+                    headers={'user-agent': 'Mozilla/5.0 (Windows NT 6.3; rv:36.0) ..'}
+                ) as http:
                     response = http.request('GET', image_url, preload_content=False)
                     image_data: bytes = response.data
                     image_type: str = response.headers['Content-Type']
