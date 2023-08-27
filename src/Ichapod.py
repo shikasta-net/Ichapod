@@ -7,12 +7,13 @@ import mimetypes
 from pathlib import Path
 import sys
 import traceback
+import yaml
 from typing import Iterator
 
 from Episode import Episode
 from Podcast import Podcast
 from Record import Record
-from util import set_error, get_error
+from util import set_error, get_error, migrate_podcast_list_syntax
 
 parser = argparse.ArgumentParser(description='Download podcasts.')
 parser.add_argument('podcast_list', type=Path, help='Podcast list')
@@ -38,12 +39,25 @@ else:
     log_level = logging.INFO
 
 def podcast_list(filename: Path) -> Iterator['Podcast']:
-    with open(filename, 'r') as podcast_list:
-        for entry in podcast_list.readlines():
-            podcast = Podcast.create(entry)
-            if podcast:
-                yield podcast
-            continue
+    try: 
+        the_podcast_list = yaml.safe_load(filename.read_text())
+    except:
+        the_podcast_list = None
+    if not isinstance(the_podcast_list, list):
+        try:
+            rewrite = migrate_podcast_list_syntax(filename.read_text())
+            filename.write_text(rewrite)
+        except OSError:
+            print("ERR!!! Unable to update podcast list file format")
+            set_error(50)
+            sys.exit(get_error())
+    the_podcast_list = yaml.safe_load(filename.read_text())
+    
+    for podcast in the_podcast_list:
+        podcast = Podcast.create(podcast)
+        if podcast:
+            yield podcast
+        continue
 
 def move(downloaded_file: Path, podcast_file: Path, over_write=False) -> bool :
     podcast_file.parent.mkdir(parents=True, exist_ok=True)
@@ -67,6 +81,8 @@ def move(downloaded_file: Path, podcast_file: Path, over_write=False) -> bool :
 
 if __name__ == "__main__":
     try :
+        podcast = None
+        episode = None
         actual_run = not args.dry_run
 
         logging.getLogger().setLevel(logging.INFO)

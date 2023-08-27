@@ -1,0 +1,27 @@
+---
+- series: Talk Of The Nation
+  author: NPR
+  url: http://www.npr.org/rss/podcast.php?id=5
+  enabled: false
+- series: A Couple Of Cold Ones
+  author: Spill.com
+  url: http://feeds.spill.com/spill/acoco
+  enabled: false
+- series: Let's Do This
+  author: Spill.com
+  url: http://feeds.spill.com/spill/letsdothis
+- series: Movie Reviews
+  author: Spill.com
+  url: http://feeds.spill.com/spill/movie-review
+- series: Global News
+  author: BBC
+  url: http://downloads.bbc.co.uk/podcasts/worldservice/globalnews/rss.xml
+- series: This American Life
+  author: This American Life
+  url: http://feeds.feedburner.com/talpodcast
+- series: Fresh Air
+  author: NPR
+  url: http://www.npr.org/rss/podcast.php?id=13
+- series: Culturetopia
+  author: NPR
+  url: http://www.npr.org/rss/podcast.php?id=510282

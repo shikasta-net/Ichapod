@@ -9,47 +9,20 @@ from src.Podcast import Podcast
 class TestPodcast(unittest.TestCase):
 
     @parameterized.expand([
-        ["URL Only",
-         "http://url.url.co.url/someplace/here.rss",
-         ["http://url.url.co.url/someplace/here.rss"],
-        ],
-        ["Three part",
-         "Author---Series---http://url.url.co.url/someplace/here.rss",
-         ["Author", "Series", "http://url.url.co.url/someplace/here.rss"],
-        ],
-        ["Ignored simple",
-         "#Author---Series---http://url.url.co.url/someplace/here.rss",
-         None,
-        ],
-        ["Ignored with spaces",
-         "   #Author---Series---http://url.url.co.url/someplace/here.rss",
-         None,
-        ],
-    ])
-    def test_tokenise(self, name: str, input: str, expected: List[str]):
-        result = Podcast._tokanise(input)
-        self.assertEqual(result, expected)
-
-
-    @parameterized.expand([
         ["URL only",
-         "http://url.url.co.url/someplace/here.rss",
+         dict(url= "http://url.url.co.url/someplace/here.rss"),
          Podcast("http://url.url.co.url/someplace/here.rss"),
         ],
         ["Two part",
-         "Author---http://url.url.co.url/someplace/here.rss",
+         dict(author="Author", url="http://url.url.co.url/someplace/here.rss"),
          Podcast("http://url.url.co.url/someplace/here.rss", "Author"),
         ],
         ["Three part",
-         "Author---Series---http://url.url.co.url/someplace/here.rss",
+         dict(author="Author", series="Series", url="http://url.url.co.url/someplace/here.rss"),
          Podcast("http://url.url.co.url/someplace/here.rss", "Author", "Series"),
         ],
         ["Ignored simple",
-         "#Author---Series---http://url.url.co.url/someplace/here.rss",
-         None,
-        ],
-        ["Ignored with spaces",
-         "   #Author---Series---http://url.url.co.url/someplace/here.rss",
+         dict(enabled=False, author="Author", series="Series", url="http://url.url.co.url/someplace/here.rss"),
          None,
         ],
     ])

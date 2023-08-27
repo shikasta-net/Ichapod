@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from pathlib import Path
 from typing import Tuple
 import unittest
 from parameterized import parameterized
@@ -175,3 +176,10 @@ class TestUtil(unittest.TestCase):
     ])
     def test_bisect(self, name: str, input: Tuple, expected: int):
         self.assertEqual(GenericBisect.bisect(*input), expected)
+
+    def test_migrate_podcast_list_syntax(self):
+        with Path('test', 'resource', 'podcast_list.txt').open('r') as old_syntax_file:
+            old_podcast_list = old_syntax_file.read() 
+        with Path('test', 'resource', 'podcast_list.yml').open('r') as new_syntax_file:
+            new_podcast_list = new_syntax_file.read()
+        self.assertEqual(new_podcast_list, migrate_podcast_list_syntax(old_podcast_list))

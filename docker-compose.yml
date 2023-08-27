@@ -5,13 +5,13 @@ services:
     image: shikasta/ichapod
     build: .
     volumes:
-      - "./podcasts.txt:/var/lib/ichapod/podcasts.txt"
+      - "./podcasts.yml:/var/lib/ichapod/podcasts.yml"
       - "/tmp/podcasts:/podcasts"
     command:
       # - "--quiet"
       # - "--debug"
       # - "--dry-run"
       # - "--log-config=/opt/ichapod/log.conf"
-      - "/var/lib/ichapod/podcasts.txt"
+      - "/var/lib/ichapod/podcasts.yml"
       - "/podcasts"
     user: "1000:10000"

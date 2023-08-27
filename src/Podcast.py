@@ -16,19 +16,11 @@ class Podcast:
         self.series = series
 
     @classmethod
-    def create(cls, input: str) -> 'Podcast':
-        tokens = cls._tokanise(input)
-
-        if not tokens:
+    def create(cls, input: dict) -> 'Podcast':
+        if not input.pop('enabled', True):
             return None
 
-        return cls(tokens[-1], *tokens[:-1])
-
-    @classmethod
-    def _tokanise(cls, input: str) -> List[str]:
-        if input.lstrip()[0] == "#":
-            return None
-        return [ token.strip() for token in input.split("---") ]
+        return cls(**input)
 
     def episodes(self) -> Iterator['Episode']:
         manifest = self._get_manifest()
@@ -36,17 +28,18 @@ class Podcast:
         return self._episodes(manifest, cover_image)
 
     def _episodes(self, manifest: dict, cover_image: Image) -> Iterator['Episode']:
-        author: str = self.author if self.author else dict['rss']['channel']['title']
-        album: str = self.series if self.series else author
+        if not self.series:
+            self.series = manifest['rss']['channel']['title']
+        author: str = self.author or self.series 
 
         episodes: List(dict) = manifest['rss']['channel']['item']
 
         for episode_blob in episodes :
-            episode = Episode.create(author, album, episode_blob, cover_image)
+            episode = Episode.create(author, self.series, episode_blob, cover_image)
             if episode and not isinstance(episode, Blank):
                 yield episode
             elif not episode:
-                logging.warning(F"Something was wrong with {author} - {album} - {episode_blob['title']}")
+                logging.warning(F"Something was wrong with {author} - {self.series} - {episode_blob['title']}")
 
     def _download_cover(self, manifest: dict) -> Image:
         if 'image' in manifest['rss']['channel']:
@@ -81,9 +74,9 @@ class Podcast:
         return {}
 
     def _folder(self):
-        if self.series and self.series != self.author:
+        if self.author and self.series != self.author:
             return F"{sanitise_path(self.author)}/{sanitise_path(self.series)}"
-        return sanitise_path(F"{self.author}")
+        return sanitise_path(F"{self.series}")
 
     def __eq__(self, other):
         return (
