@@ -1,7 +1,9 @@
 
+from typing import Dict
 from datetime import datetime
 from dateutil import parser, tz
 import logging
+import yaml
 import pytz
 import re
 
@@ -156,3 +158,20 @@ def string_prefix_comparator_left(prefix):
         else:
             return GenericBisect.LOWER
     return parametrized_string_prefix_comparator_left
+
+def migrate_podcast_list_syntax(podcast_list: str) -> str:
+    new_podcast_list = [_line_to_dict(line.strip()) for line in podcast_list.split("\n") if line.strip()]
+    return "---\n"+yaml.safe_dump(new_podcast_list, sort_keys=False)
+
+def _line_to_dict(line: str) -> Dict:
+    tokens = [ token.strip() for token in line.split("---") ]
+    podcast_entry = dict()
+    if len(tokens) > 1:
+        podcast_entry['series'] = tokens[-2].lstrip('#').strip()
+    if len(tokens) > 2:
+        podcast_entry['author'] = tokens[-3].lstrip('#').strip()
+    podcast_entry['url'] = tokens[-1]
+    if line.startswith('#'):
+        podcast_entry['enabled'] = False
+
+    return podcast_entry

@@ -1,0 +1,9 @@
+---
+- series: The Infinite Monkey Cage
+  url: http://podcasts.files.bbci.co.uk/b00snr0w.rss
+  enabled: false
+- series: Edict Zero
+  url: http://feeds.feedburner.com/EdictZero-Fis
+- series: Home Front
+  author: BBC
+  url: https://podcasts.files.bbci.co.uk/b047qhc2.rss

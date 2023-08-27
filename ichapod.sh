@@ -4,4 +4,4 @@
 
 set -e
 
-docker run --rm -v /tmp/podcasts/podcast-list.txt:/var/lib/ichapod/podcasts.txt:ro -v /tmp/podcasts:/podcasts:rw --user 1000:10000 shikasta/ichapod --log-config=/opt/ichapod/log.conf /var/lib/ichapod/podcasts.txt /podcasts "$@"
+docker run --rm -v /tmp/podcasts/podcast-list.yml:/var/lib/ichapod/podcasts.yml:ro -v /tmp/podcasts:/podcasts:rw --user 1000:10000 shikasta/ichapod --log-config=/opt/ichapod/log.conf /var/lib/ichapod/podcasts.yml /podcasts "$@"

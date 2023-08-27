@@ -8,7 +8,7 @@ ADD requirements.txt log.conf /opt/ichapod/
 RUN pip3 install -r /opt/ichapod/requirements.txt
 
 ADD src /opt/ichapod/src
-ADD podcasts.txt /var/lib/ichapod/podcasts.txt
+ADD podcasts.yml /var/lib/ichapod/podcasts.yml
 
 VOLUME /podcasts
 
