@@ -49,7 +49,7 @@ class TestUtil(unittest.TestCase):
          #"2019-10-23-1600",
         ],
     ])
-    def test_parse_date(self, name:str, input: str, expected: str):
+    def test_parse_date(self, name: str, input: str, expected: str):
         self.assertEqual(convert_date(input), expected)
 
     @parameterized.expand([
@@ -74,7 +74,7 @@ class TestUtil(unittest.TestCase):
          "7197",
         ],
     ])
-    def test_tracknumber_from_date(self, name:str, input: str, expected: str):
+    def test_tracknumber_from_date(self, name: str, input: str, expected: str):
         self.assertEqual(tracknumber_from_date(input), expected)
 
     @parameterized.expand([
@@ -107,7 +107,7 @@ class TestUtil(unittest.TestCase):
          "".join(ok_unicode)
         ],
     ])
-    def test_remove_unicode(self, name:str, input: str, expected: str):
+    def test_remove_unicode(self, name: str, input: str, expected: str):
         self.assertEqual(remove_unicode(input), expected)
 
     @parameterized.expand([
@@ -128,7 +128,7 @@ class TestUtil(unittest.TestCase):
          "What is going on here: a better look at things",
         ],
     ])
-    def test_clean_title(self, name:str, input: str, expected: str):
+    def test_clean_title(self, name: str, input: str, expected: str):
         self.assertEqual(clean_title(input), expected)
 
     @parameterized.expand([
@@ -145,7 +145,7 @@ class TestUtil(unittest.TestCase):
          "2019-10-21-1100 - title, series - authors, a, b, c - album, album, the.mp4",
         ],
     ])
-    def test_sanitise_path(self, name:str, input: str, expected: str):
+    def test_sanitise_path(self, name: str, input: str, expected: str):
         self.assertEqual(sanitise_path(input), expected)
 
     @parameterized.expand([
