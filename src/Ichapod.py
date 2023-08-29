@@ -27,6 +27,7 @@ log_arg.add_argument('--quiet', '-q', action='store_true', help='Logging to quie
 
 args = parser.parse_args()
 
+(args.destination_folder / '.log').mkdir(parents=True, exist_ok=True)
 logging.config.fileConfig(args.log_config)
 
 if args.quiet:
