@@ -250,6 +250,9 @@ class Episode:
     def __str__(self):
         return self._filename()
 
+    def __repr__(self):
+        return str(self.title)
+
 class Blank(Episode):
     def __init__(self):
         super(Blank, self).__init__(None,-1,None,None,None,None,None,None,None)
