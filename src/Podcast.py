@@ -3,7 +3,9 @@ import logging
 import traceback
 from typing import Dict, Iterator, List
 import urllib3
+from urllib3.exceptions import MaxRetryError
 import xmltodict
+from xml.parsers.expat import ExpatError
 
 from Episode import Episode, Image, Blank
 from util import *
@@ -24,6 +26,8 @@ class Podcast:
 
     def episodes(self) -> Iterator['Episode']:
         manifest = self._get_manifest()
+        if not manifest:
+            return iter([])
         cover_image = self._download_cover(manifest)
         return self._episodes(manifest, cover_image)
 
@@ -60,17 +64,21 @@ class Podcast:
         return None
 
     def _get_manifest(self) -> Dict:
-        with urllib3.PoolManager(
-            headers={'user-agent': 'Mozilla/5.0 (Windows NT 6.3; rv:36.0) ..'}
-        ) as http:
-            response = http.request('GET', self.url, preload_content=False)
-            try:
+        try:
+            with urllib3.PoolManager(
+                headers={'user-agent': 'Mozilla/5.0 (Windows NT 6.3; rv:36.0) ..'},
+            ) as http:
+                response = http.request('GET', self.url, preload_content=False)
                 data: dict = xmltodict.parse(response.data)
                 return data
-            except:
-                logging.error(F"Failed to parse xml from {self.url}")
-                logging.debug(traceback.format_exc())
-                set_error(1)
+        except MaxRetryError as e:
+            logging.error(F"Unable to retrieve manifest from {self.url}: {e.reason}")
+            logging.debug(traceback.format_exc())
+            set_error(1)
+        except ExpatError as e:
+            logging.error(F"Failed to parse xml from {self.url}: {e}")
+            logging.debug(traceback.format_exc())
+            set_error(1)
         return {}
 
     def _folder(self):
