@@ -1,6 +1,6 @@
 FROM python:3.8
 
-MAINTAINER Kym Eden
+LABEL org.opencontainers.image.authors="Kym Eden"
 
 RUN apt-get update && apt-get install -y ffmpeg
 
