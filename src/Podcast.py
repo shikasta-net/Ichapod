@@ -36,7 +36,7 @@ class Podcast:
             self.series = manifest['rss']['channel']['title']
         author: str = self.author or self.series 
 
-        episodes: List(dict) = manifest['rss']['channel']['item']
+        episodes: List[dict] = manifest['rss']['channel']['item']
 
         for episode_blob in episodes :
             episode = Episode.create(author, self.series, episode_blob, cover_image)
